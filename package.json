@@ -1,0 +1,22 @@
+{
+  "name": "IChanggePlayer",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "dependencies": {
+    "express": "3.*"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-bower-install": "~1.4.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-concurrent": "~0.5.0",
+    "grunt-nodemon": "*",
+    "load-grunt-tasks": "~0.4.0",
+    "getconfig": "~0.3.0",
+    "connect-livereload": "~0.4.0",
+    "grunt-contrib-connect": "~0.8.0"
+  }
+}
