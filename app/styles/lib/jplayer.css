@@ -1,0 +1,196 @@
+/* @group JPlayer Base */
+
+.jp-audio {
+    font-family: "Microsoft YaHei", Verdana, Arial, sans-serif;
+    color: #eee;
+    background-color: #2c3e50;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.jp-gui {
+    position: relative;
+    background-color: #2c3e50;
+    margin: 0 auto;
+    padding: 0 10px;
+    height: 80px;
+}
+
+/* @end */
+
+/* @group JPlayer Controller */
+
+.jp-detail {
+    margin: 8px 0;
+}
+
+.jp-controller {
+    margin: 8px 0;
+}
+
+/* @group JPlayer Controller-Progress */
+
+.jp-progress {
+    margin: 4px 0 8px;
+    overflow:hidden;
+    height: 5px;
+    border-radius: 5px;
+    background-color: #ecf0f1;
+    cursor: pointer;
+}
+.jp-seek-bar {
+    height: 100%;
+    cursor: pointer;
+}
+.jp-play-bar {
+    background: #1abc9c;
+    width: 0px;
+    height: 100%;
+}
+
+/* @end */
+
+/* @group JPlayer Controls */
+
+.jp-controls {
+    width: 120px;
+    margin-top: 15px;
+    padding: 0 0;
+    overflow: hidden;
+}
+
+.jp-control-btn {
+    color: #2980b9;
+}
+
+a.jp-stop, a.jp-previous, a.jp-next {
+    width:28px;
+    height:28px;
+    margin-top:6px;
+}
+
+/* @end */
+
+/* @group JPlayer Details */
+
+.jp-details {
+    margin-left: 120px;
+    padding-left: 10px;
+    overflow: hidden;
+}
+
+/* @group volume controls */
+
+.jp-volume-control {
+    position: relative;
+    width: 110px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.jp-volume-bar {
+    position: relative;
+    display: inline-block;
+    background-color: #ecf0f1;
+    width: 80px;
+    height: 4px;
+    margin-left: 2px;
+    margin-top: -3px;
+    vertical-align: middle;
+    border-radius: 5px;
+}
+
+.jp-volume-bar-value {
+    height: 4px;
+    background-color: #16a085;
+    border-radius: 5px;
+
+}
+
+a.jp-stop, a.jp-previous, a.jp-next {
+    width:28px;
+    height:28px;
+    margin-top:6px;
+}
+
+/* @end */
+
+a.jp-function-btn {
+    margin-right: 5px;
+    color: #9b59b6;
+}
+
+a.jp-function-btn:hover {
+    color: #8e44ad;
+    text-decoration: none;
+}
+
+/* @end */
+
+
+/* @group current time and duration */
+
+.jp-audio .jp-time-holder {
+    position:absolute;
+    top:50px;
+}
+.jp-audio .jp-type-single .jp-time-holder {
+    left:110px;
+    width:186px;
+}
+.jp-audio .jp-type-playlist .jp-time-holder {
+    left:166px;
+    width:130px;
+}
+
+.jp-current-time,
+.jp-duration {
+    width:60px;
+    font-size:.64em;
+    font-style:oblique;
+}
+.jp-current-time {
+    float: left;
+    display:inline;
+}
+.jp-duration {
+    float: right;
+    display:inline;
+    text-align: right;
+}
+
+.jp-video .jp-current-time {
+    margin-left:20px;
+}
+.jp-video .jp-duration {
+    margin-right:20px;
+}
+
+/* @end */
+
+/* @end */
+
+/* @group NO SOLUTION error feedback */
+
+.jp-no-solution {
+    padding:5px;
+    font-size:.8em;
+    background-color:#eee;
+    border:2px solid #009be3;
+    color:#000;
+    display:none;
+}
+
+.jp-no-solution a {
+    color:#000;
+}
+
+.jp-no-solution span {
+    font-size:1em;
+    display:block;
+    text-align:center;
+    font-weight:bold;
+}
+
+/* @end */
