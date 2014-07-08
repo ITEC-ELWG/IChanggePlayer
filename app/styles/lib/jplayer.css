@@ -64,12 +64,6 @@
     color: #2980b9;
 }
 
-a.jp-stop, a.jp-previous, a.jp-next {
-    width:28px;
-    height:28px;
-    margin-top:6px;
-}
-
 /* @end */
 
 /* @group JPlayer Details */
