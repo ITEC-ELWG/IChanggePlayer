@@ -18,6 +18,7 @@ $(document).ready(function() {
         },
         swfPath: "scripts/lib/",
         solution: "html, flash",
+        // solution: "flash",
         supplied: "mp3, oga",
         volume: 0.8,
         wmode: "window",
@@ -28,7 +29,12 @@ $(document).ready(function() {
         toggleDuration: true,
         loadstart: function(e) {
             log('Start loading...');
-            changePlayButtonStyle(false);
+            if(navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i)) {
+                console.log('detected iphone');
+                changePlayButtonStyle(true);
+            } else {
+                changePlayButtonStyle(false);
+            }
         },
         error: function(e) {
             log('error');
@@ -37,6 +43,9 @@ $(document).ready(function() {
         },
         loadeddata: function(event) {
             log('loadeddata');
+        },
+        loadedmetadata: function(e) {
+            log('loadedmetadata');
         },
         canplaythrough: function(e) {
             log('canplaythrough');
@@ -47,6 +56,11 @@ $(document).ready(function() {
         },
         play: function(e) {
             log('play');
+            changePlayButtonStyle(false);
+        },
+        pause: function(e) {
+            log('pause');
+            changePlayButtonStyle(true);
         },
         durationchange: function(e) {
             log('duration change');
@@ -66,6 +80,7 @@ $(document).ready(function() {
     function log(msg) {
         if (IS_DEBUG) {
             $('#logger').append('<p>' + msg + '</p>');
+            console.debug(msg);
         } else {
             console.debug(msg);
         }
