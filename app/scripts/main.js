@@ -4,7 +4,6 @@ $(document).ready(function() {
     var $ghostPlayer = $("#ichangge-player"),
         $mainPlayer = $("#ichangge-player-container");
 
-    // $mainPlayer.find('.jp-play').hide();
     changePlayButtonStyle(true);
     $mainPlayer.find('.jp-pause').hide();
 
