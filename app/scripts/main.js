@@ -1,22 +1,24 @@
-$(document).ready(function(){
+$(document).ready(function() {
+    var IS_DEBUG = true;
+
     var $ghostPlayer = $("#ichangge-player"),
         $mainPlayer = $("#ichangge-player-container");
 
-    $mainPlayer.find('.jp-play').hide();
+    // $mainPlayer.find('.jp-play').hide();
+    changePlayButtonStyle(true);
     $mainPlayer.find('.jp-pause').hide();
 
     $ghostPlayer.jPlayer({
-        ready: function (event) {
+        ready: function(event) {
             $(this).jPlayer("setMedia", {
                 title: "庞麦郎-我的滑板鞋",
-                // mp3: "http://115.156.216.106:3000/music/庞麦郎-我的滑板鞋.mp3"
-                mp3: "http://ichangge-player-music.qiniudn.com/music/%E5%BA%9E%E9%BA%A6%E9%83%8E-%E6%88%91%E7%9A%84%E6%BB%91%E6%9D%BF%E9%9E%8B.mp3",
-                // mp3: "http://ichangge-player-music.qiniudn.com/music/beyond-%E6%88%91%E6%98%AF%E6%84%A4%E6%80%92.mp3"
-                // oga: "http://jplayer.org/audio/ogg/Miaow-07-Bubble.ogg"
+                mp3: "http://ichangge-player-music.qiniudn.com/mp3/%E5%BA%9E%E9%BA%A6%E9%83%8E-%E6%88%91%E7%9A%84%E6%BB%91%E6%9D%BF%E9%9E%8B.mp3",
+                oga: "http://ichangge-player-music.qiniudn.com/ogg/%E5%BA%9E%E9%BA%A6%E9%83%8E-%E6%88%91%E7%9A%84%E6%BB%91%E6%9D%BF%E9%9E%8B.ogg"
             });
         },
-        swfPath: "../js",
-        supplied: "mp3, m4a, oga",
+        swfPath: "scripts/lib/",
+        solution: "html, flash",
+        supplied: "mp3, oga",
         volume: 0.8,
         wmode: "window",
         cssSelectorAncestor: "#ichangge-player-container",
@@ -24,43 +26,49 @@ $(document).ready(function(){
         keyEnabled: true,
         remainingDuration: true,
         toggleDuration: true,
-        // progress: function(event) {
-        //     log('progress');
-        //     console.debug(event);
-        //     // showPlay();
-        // },
         loadstart: function(e) {
             log('Start loading...');
+            changePlayButtonStyle(false);
         },
         error: function(e) {
             log('error');
             log(e.toString());
+            console.debug(e);
         },
         loadeddata: function(event) {
             log('loadeddata');
         },
         canplaythrough: function(e) {
             log('canplaythrough');
-            // $('loader').show();
         },
         canplay: function(e) {
             log('canplay');
-            $mainPlayer.find('.jp-play').find('i.fa-spin')
-                .removeClass('fa-spinner fa-spin').addClass('fa-play');
+            changePlayButtonStyle(true);
         },
         play: function(e) {
-            // showPlay();
             log('play');
         },
         durationchange: function(e) {
             log('duration change');
-            // log(e);
-            // showPlay();
         }
     });
 
-    function log(msg) {
-            $('#logger').append('<p>'+ msg + '</p>');
+    function changePlayButtonStyle(canPlay) {
+        if (canPlay) {
+            $mainPlayer.find('.jp-play').find('i.fa-spin')
+                .removeClass('fa-spinner fa-spin').addClass('fa-play');
+        } else {
+            $mainPlayer.find('.jp-play').find('i.fa-play')
+                .removeClass('fa-play').addClass('fa-spinner fa-spin');
         }
-    // $("#jplayer_inspector").jPlayerInspector({jPlayer: $mainPlayer});
+    }
+
+    function log(msg) {
+        if (IS_DEBUG) {
+            $('#logger').append('<p>' + msg + '</p>');
+        } else {
+            console.debug(msg);
+        }
+    }
+
 });

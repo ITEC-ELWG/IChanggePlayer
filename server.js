@@ -16,8 +16,6 @@ app.use('/music', express.static(__dirname + '/music'));
 app.use(require('connect-livereload')({
     port: 35729
 }));
-var logFile = require('fs').createWriteStream('./myLogFile.log', {flags: 'a'});
-app.use(express.logger({stream: logFile}));
 
 app.get('/test', function(req, res) {
     res.send('hello world');
