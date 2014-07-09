@@ -1822,8 +1822,14 @@
 					}
 				}
 				if(this.css.jq.title.length) {
+					var showTitle = '';
 					if(typeof media.title === 'string') {
-						this.css.jq.title.html(media.title);
+						if (typeof media.artist === 'string') {
+							showTitle = media.artist + '-' + media.title;
+						} else {
+							showTitle = media.title;
+						}
+						this.css.jq.title.html(showTitle);
 						if(this.htmlElement.audio) {
 							this.htmlElement.audio.setAttribute('title', media.title);
 						}

@@ -5,6 +5,7 @@ html, body {
 .wrapper {
     width: 100%;
     height: 100%;
+    background-color: #2980b9;
     background: linear-gradient(to bottom, #2c3e50, #2980b9 70%, #16a085);
 }
 

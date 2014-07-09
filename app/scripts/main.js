@@ -21,6 +21,7 @@ $(document).ready(function() {
             volume: 0.8,
             wmode: "window",
             cssSelectorAncestor: "#ichangge-player-container",
+            loop: true,
             fullScreen: true,
             smoothPlayBar: true,
             keyEnabled: true,
@@ -93,13 +94,9 @@ $(document).ready(function() {
         console.log(currentSong);
     }
 
-    function resetDetail(song) {
-        $mainPlayer
-    }
-
     function log(msg) {
         if (IS_DEBUG) {
-            $('#logger').append('<p>' + msg + '</p>');
+            $('#logger').prepend('<p>' + msg + '</p>');
             console.debug(msg);
         } else {
             console.debug(msg);
