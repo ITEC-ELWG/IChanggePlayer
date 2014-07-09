@@ -507,6 +507,7 @@
 				stop: ".jp-stop",
 				seekBar: ".jp-seek-bar",
 				playBar: ".jp-play-bar",
+				playBarCursor: ".jp-play-bar-cursor",
 				mute: ".jp-mute",
 				unmute: ".jp-unmute",
 				volumeBar: ".jp-volume-bar",
@@ -1659,11 +1660,20 @@
 			if(this.css.jq.seekBar.length) {
 				this.css.jq.seekBar.width(this.status.seekPercent+"%");
 			}
+			if(this.css.jq.playBarCursor.length && this.status.seekPercent === 100) {
+				this.css.jq.playBarCursor.show();
+			} else {
+				this.css.jq.playBarCursor.hide();
+			}
 			if(this.css.jq.playBar.length) {
 				if(this.options.smoothPlayBar) {
 					this.css.jq.playBar.stop().animate({
 						width: this.status.currentPercentAbsolute+"%"
-					}, 250, "linear");
+					}, {duration: 250, queue: false});
+					this.css.jq.playBarCursor.stop().animate({
+						left: this.status.currentPercentAbsolute / 100.0 * 
+							this.css.jq.seekBar.width()
+					}, {duration: 250, queue: false});
 				} else {
 					this.css.jq.playBar.width(this.status.currentPercentRelative+"%");
 				}

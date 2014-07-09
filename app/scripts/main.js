@@ -6,7 +6,6 @@ $(document).ready(function() {
         myPlayList;
 
     changePlayButtonStyle(true);
-    $mainPlayer.find('.jp-pause').hide();
 
     $.getJSON('/playlist.json', function(data) {
         console.log(data);
