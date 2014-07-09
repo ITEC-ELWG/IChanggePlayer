@@ -32,21 +32,35 @@
 /* @group JPlayer Controller-Progress */
 
 .jp-progress {
-    margin: 4px 0 8px;
+    position: relative;
+    margin: 2px 0;
+    padding: 0 8px;
+    height: 16px;
     overflow:hidden;
+    cursor: pointer;
+}
+.jp-seek-bar {
+    margin: 5px 0;
     height: 5px;
     border-radius: 5px;
     background-color: #ecf0f1;
     cursor: pointer;
 }
-.jp-seek-bar {
-    height: 100%;
-    cursor: pointer;
-}
 .jp-play-bar {
+    border-radius: 5px;
     background: #1abc9c;
     width: 0px;
     height: 100%;
+}
+.jp-play-bar-cursor {
+    /*display: none;*/
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 16px;
+    background-color: #bdc3c7;
 }
 
 /* @end */
