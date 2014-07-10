@@ -30,7 +30,7 @@ $(document).ready(function() {
             remainingDuration: true,
             toggleDuration: true,
             ready: function(e) {
-                selectSong(0);
+                selectSong(0, false);
             },
             loadstart: function(e) {
                 log('Start loading...');
@@ -83,14 +83,18 @@ $(document).ready(function() {
         }
     }
 
-    function selectSong(index) {
+    function selectSong(index, canPlay) {
         var currentSong;
         if (index === 'next') {
             myPlayList.next();
         } else if (index === 'previous') {
             myPlayList.previous();
         } else {
-            myPlayList.select(index);
+            if (canPlay) {
+                myPlayList.play(index);
+            } else {
+                myPlayList.select(index);
+            }
         }
         currentSong = myPlayList.playlist[myPlayList.current];
         console.log(currentSong);
@@ -99,12 +103,13 @@ $(document).ready(function() {
     function initPlayListView(playList) {
         var playListHeight = 400,
             $playList = $mainPlayer.find('.jp-playlist'),
-            itemTemplate = '<p><a href="javascript:void(0);" class="jp-playlist-item">' + 
-                '{{artist}}-{{title}}' + 
+            itemTemplate = '<li><div><a href="javascript:void(0);" class="jp-playlist-item">' + 
+                '<p>{{artist}}-{{title}}' + 
                 '<span class="jp-playlist-duration pull-right">{{duration}}</span>' + 
-                '</a></p>',
+                '</p></a></div></li>',
             item, i;
 
+        // 点击打开播放列表按钮事件
         $mainPlayer.on('click', '.jp-eject', function() {
             if ($(this).attr('data-toggle') === 'false') {
                 $('.jp-playlist').animate({
@@ -121,11 +126,16 @@ $(document).ready(function() {
             }
         });
 
+        // 点击播放列表选项事件
+        $mainPlayer.find('.jp-playlist').on('click', '.jp-playlist-item', function() {
+            selectSong(parseInt($(this).attr('index')), true);
+        });
+
         for (i = 0; i < playList.length; i++) {
             item = itemTemplate.replace(/{{(\w*)}}/g, function(m, key) {
                 return playList[i][key] || '';
             });
-            $playList.append($(item).attr('index', i));
+            // $playList.append($(item).attr('index', i));
         }
     }
 

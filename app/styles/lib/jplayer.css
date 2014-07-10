@@ -27,8 +27,16 @@
     top: 0;
     left: 0;
     width: 100%;
-    /*height: 0;*/
     background-color: rgba(44, 62, 80, 0.7);
+}
+
+.jp-playlist ul {
+    padding-left: 0;
+}
+
+.jp-playlist ul>li {
+    display: block;
+    margin-bottom: 5px;
 }
 
 a.jp-playlist-item {
