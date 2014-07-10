@@ -7,8 +7,11 @@ $(document).ready(function() {
 
     changePlayButtonStyle(true);
 
+
     $.getJSON('/playlist.json', function(data) {
         console.log(data);
+        initPlayListView(data);
+
         myPlayList = new jPlayerPlaylist({
             jPlayer: '#ichangge-player',
             cssSelectorAncestor: '#ichangge-player-container'
@@ -91,6 +94,39 @@ $(document).ready(function() {
         }
         currentSong = myPlayList.playlist[myPlayList.current];
         console.log(currentSong);
+    }
+
+    function initPlayListView(playList) {
+        var playListHeight = 400,
+            $playList = $mainPlayer.find('.jp-playlist'),
+            itemTemplate = '<p><a href="javascript:void(0);" class="jp-playlist-item">' + 
+                '{{artist}}-{{title}}' + 
+                '<span class="jp-playlist-duration pull-right">{{duration}}</span>' + 
+                '</a></p>',
+            item, i;
+
+        $mainPlayer.on('click', '.jp-eject', function() {
+            if ($(this).attr('data-toggle') === 'false') {
+                $('.jp-playlist').animate({
+                    opacity: 1,
+                    top: -$playList.outerHeight()
+                }, 500);
+                $(this).attr('data-toggle', 'true');
+            } else {
+                $('.jp-playlist').animate({
+                    opacity: 0,
+                    top: 0
+                }, 500);
+                $(this).attr('data-toggle', 'false');
+            }
+        });
+
+        for (i = 0; i < playList.length; i++) {
+            item = itemTemplate.replace(/{{(\w*)}}/g, function(m, key) {
+                return playList[i][key] || '';
+            });
+            $playList.append($(item).attr('index', i));
+        }
     }
 
     function log(msg) {
