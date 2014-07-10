@@ -39,6 +39,10 @@
     margin-bottom: 5px;
 }
 
+.jp-playlist-current a.jp-playlist-item {
+    color: #e67e22;
+}
+
 a.jp-playlist-item {
     color: #f1c40f;
 }
