@@ -35,36 +35,16 @@ module.exports = function(grunt) {
                 options: {
                     livereload: 35729
                 }
-            },
-            // js: {
-            //     files: ['<%= config.app %>/scripts/{,*/}*.js'],
-            //     options: {
-            //         livereload: true
-            //     }
-            // },
-            // html: {
-            //     files: ['<%= config.app %>/**/*.html'],
-            //     options: {
-            //         livereload: true
-            //     }
-            // },
-            // styles: {
-            //     files: ['<%= config.app %>/styles/{,*/}*.css'],
-            //     options: {
-            //         livereload: true
-            //     }
-            // },
-            // gruntfile: {
-            //     files: ['Gruntfile.js']
-            // }
-            // reload: {
-            //     port: 35729,
-            //     liveReload: {},
-            //     proxy: {
-            //         host: "localhost",
-            //         port: 8080
-            //     }
-            // }
+            }
+        },
+        concat: {
+            dist: {
+                src: [
+                    'app/scripts/lib/jquery.jplayer.js',
+                    'app/scripts/lib/jplayer.playlist.js'
+                ],
+                dest: 'dist/ichangge-player.js'
+            }
         },
         connect: {
             options: {
