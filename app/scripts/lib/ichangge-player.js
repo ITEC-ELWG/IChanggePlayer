@@ -12,14 +12,14 @@
  *  - jPlayer.playlist *
  */
 
-var IChanggePlayer = (function($, jPlayerPlaylist) {
+(function($, jPlayerPlaylist, undefined) {
     var options = {
         containerId: 'ichangge-player',
         playList: []
     }, $mainContainer;
 
-    var init = function(options) {
-        $.extend(this.options, options);
+    var init = function(opts) {
+        $.extend(options, opts);
 
         createDOM(options.containerId);
     };
@@ -33,7 +33,7 @@ var IChanggePlayer = (function($, jPlayerPlaylist) {
         }
     }
 
-    return {
+    window.IChanggePlayer = {
         init: init
     };
 })(jQuery, jPlayerPlaylist);
