@@ -82,10 +82,7 @@
     vertical-align: top;
     display: inline-block;
 }
-.jp-controls .jp-pause {
-    display: none;
-}
-.jp-play {
+.jp-play, .jp-pause {
     margin: 10px 15px 0;
 }
 

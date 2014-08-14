@@ -15,13 +15,16 @@
 (function($, jPlayerPlaylist, undefined) {
     var options = {
         containerId: 'ichangge-player',
-        playList: []
-    }, $mainContainer;
+        playList: [],
+        debug: true
+    }, 
+    $mainContainer, mainPlayer;
 
     var init = function(opts) {
         $.extend(options, opts);
 
         createDOM(options.containerId);
+        initPlayer(options.playList);
     };
 
     function createDOM(containerId) {
@@ -42,7 +45,7 @@
         '<div class="player-song-info">' +
         '<p class="jp-title mb-5">雨还是不停的落下</p>' +
         '<p class="jp-artist mb-5">孙燕姿</p>' +
-        '<p class="jp-rest-duration mb-5">-1:30</p>' +
+        '<p class="jp-duration mb-5">-1:30</p>' +
         '</div>' +
         '<!--             <div class="jp-progress">' +
         '<div class="jp-seek-bar" style="width: 100%;">' +
@@ -80,6 +83,103 @@
         }
 
         $mainContainer.append($(PLAYER_TEMPLATE));
+    }
+
+    function initPlayer(playList) {
+        mainPlayer = new jPlayerPlaylist({
+            jPlayer: '#ichangge-player-mock',
+            cssSelectorAncestor: '#ichangge-player-container'
+        }, playList, {
+            swfPath: "scripts/lib/",
+            solution: "html, flash",
+            supplied: "mp3, oga",
+            volume: 0.8,
+            wmode: "window",
+            cssSelectorAncestor: "#ichangge-player-container",
+            loop: true,
+            fullScreen: true,
+            smoothPlayBar: true,
+            keyEnabled: true,
+            remainingDuration: true,
+            toggleDuration: true,
+            ready: function(e) {
+                selectSong(0, false);
+            },
+            loadstart: function(e) {
+                log('Start loading...');
+                if (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i)) {
+                    console.log('detected iphone');
+                    changePlayButtonStyle(true);
+                } else {
+                    changePlayButtonStyle(false);
+                }
+            },
+            error: function(e) {
+                log('error');
+                log(e.toString());
+                console.debug(e);
+            },
+            loadeddata: function(event) {
+                log('loadeddata');
+            },
+            loadedmetadata: function(e) {
+                log('loadedmetadata');
+            },
+            canplaythrough: function(e) {
+                log('canplaythrough');
+            },
+            canplay: function(e) {
+                log('canplay');
+                changePlayButtonStyle(true);
+            },
+            play: function(e) {
+                log('play');
+                changePlayButtonStyle(false);
+            },
+            pause: function(e) {
+                log('pause');
+                changePlayButtonStyle(true);
+            },
+            durationchange: function(e) {
+                log('duration change');
+            }
+        });
+    }
+
+    function selectSong(index, canPlay) {
+        var currentSong;
+        if (index === 'next') {
+            mainPlayer.next();
+        } else if (index === 'previous') {
+            mainPlayer.previous();
+        } else {
+            if (canPlay) {
+                mainPlayer.play(index);
+            } else {
+                mainPlayer.select(index);
+            }
+        }
+        currentSong = mainPlayer.playlist[mainPlayer.current];
+        console.log(currentSong);
+    }
+
+    function changePlayButtonStyle(canPlay) {
+        if (canPlay) {
+        //     $mainContainer.find('.jp-play').find('i.fa-spin')
+        //         .removeClass('fa-spinner fa-spin').addClass('fa-play');
+        // } else {
+        //     $mainContainer.find('.jp-play').find('i.fa-play')
+        //         .removeClass('fa-play').addClass('fa-spinner fa-spin');
+        }
+    }
+
+    function log(msg) {
+        if (options.debug) {
+            $('#logger').prepend('<p>' + msg + '</p>');
+            console.debug(msg);
+        } else {
+            console.debug(msg);
+        }
     }
 
     window.IChanggePlayer = {

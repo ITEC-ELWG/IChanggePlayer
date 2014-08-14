@@ -3,5 +3,11 @@ $(document).ready(function() {
         $mainPlayer = $("#ichangge-player-container"),
         myPlayList;
 
-    IChanggePlayer.init();
+
+    $.getJSON('/playlist.json', function(data) {
+        IChanggePlayer.init({
+            playList: data
+        });
+    });
+    
 });

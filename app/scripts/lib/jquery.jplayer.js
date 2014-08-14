@@ -518,6 +518,7 @@
 				currentTime: ".jp-current-time",
 				duration: ".jp-duration",
 				title: ".jp-title",
+				artist: ".jp-artist",
 				fullScreen: ".jp-full-screen", // *
 				restoreScreen: ".jp-restore-screen", // *
 				repeat: ".jp-repeat",
@@ -1834,12 +1835,13 @@
 				if(this.css.jq.title.length) {
 					var showTitle = '';
 					if(typeof media.title === 'string') {
-						if (typeof media.artist === 'string') {
-							showTitle = media.artist + '-' + media.title;
-						} else {
+						// if (typeof media.artist === 'string') {
+						// 	showTitle = media.artist + '-' + media.title;
+						// } else {
 							showTitle = media.title;
-						}
+						// }
 						this.css.jq.title.html(showTitle);
+						this.css.jq.artist.html(media.artist);
 						if(this.htmlElement.audio) {
 							this.htmlElement.audio.setAttribute('title', media.title);
 						}
