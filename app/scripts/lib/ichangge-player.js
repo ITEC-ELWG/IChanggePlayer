@@ -17,7 +17,8 @@
         containerId: 'ichangge-player',
         playList: [],
         debug: true
-    }, 
+    },
+    currentSong,
     $mainContainer, mainPlayer;
 
     var init = function(opts) {
@@ -25,6 +26,7 @@
 
         createDOM(options.containerId);
         initPlayer(options.playList);
+        bindEvents();
     };
 
     function createDOM(containerId) {
@@ -33,7 +35,7 @@
         '<div id="ichangge-player-container" class="jp-audio">' +
         '<div class="container jp-gui jp-image-circular">' +
         '<div class="song-cover-container jp-image-wrapper jp-image-circular">' +
-        '<img src="images/player-cover-default.png" class="image-present-180">' +
+        '<img src="images/player-cover-default.png" class="jp-cover jp-image-present">' +
         '<div class="song-cover-shade player-cover-shade"></div>' +
         '</div>' +
         '<div class="player-song-interactions">' +
@@ -84,6 +86,8 @@
         }
 
         $mainContainer.append($(PLAYER_TEMPLATE));
+        // 原先的$mainContainer是总容器，后面需要修正为包含DOM的容器
+        $mainContainer = $('#ichangge-player-container');
     }
 
     function initPlayer(playList) {
@@ -143,7 +147,6 @@
     }
 
     function selectSong(index, canPlay) {
-        var currentSong;
         if (index === 'next') {
             mainPlayer.next();
         } else if (index === 'previous') {
@@ -155,8 +158,13 @@
                 mainPlayer.select(index);
             }
         }
-        currentSong = mainPlayer.playlist[mainPlayer.current];
-        console.log(currentSong);
+        updateCurrentSong();
+    }
+
+    function bindEvents() {
+        $mainContainer.find('.jp-next, .jp-previous').on('click', function() {
+            updateCurrentSong();
+        });
     }
 
     function fixIPhonePlayButton() {
@@ -175,6 +183,13 @@
         } else {
             $mainContainer.find('.player-icon-play').addClass('fa-spin');
         }
+    }
+
+    function updateCurrentSong() {
+        currentSong = mainPlayer.playlist[mainPlayer.current];
+        $mainContainer.find('.jp-cover').attr('src', 
+            currentSong.cover || 'images/player-cover-default.png');
+        console.log(currentSong);
     }
 
     function log(msg) {
