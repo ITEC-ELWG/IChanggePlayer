@@ -3,5 +3,5 @@ $(document).ready(function() {
         $mainPlayer = $("#ichangge-player-container"),
         myPlayList;
 
-    IChanggePlayer.init()
+    IChanggePlayer.init();
 });
