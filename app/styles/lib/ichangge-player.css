@@ -1,0 +1,151 @@
+#ichangge-player-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -770px;
+}
+#ichangge-player-container i {
+    cursor: pointer;
+}
+#ichangge-player-container .container {
+    height: 180px;
+    width: 180px;
+    padding: 10px;
+    background-color: #2a445a;
+    position: relative;
+}
+.song-cover-container {
+    position: relative;
+}
+.song-cover-shade {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.player-song-interactions {
+    position: absolute;
+    top: 25px;
+    left: 60px;
+}
+.player-song-info {
+    position: absolute;
+    width: 180px;
+    left: 10px;
+    bottom: 40px;
+    text-align: center;
+    color: #ffffff;
+}
+.player-song-actions {
+    position: absolute;
+    left: 25px;
+    bottom: -20px;
+}
+.jp-controls {
+    font-size: 0;
+}
+.jp-controls a {
+    vertical-align: top;
+    display: inline-block;
+}
+.jp-controls .jp-pause {
+    display: none;
+}
+.jp-play {
+    margin: 10px 15px 0;
+}
+.player-cover-shade {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -484px;
+    width: 180px;
+    height: 180px;
+}
+.player-icon-like:hover, .player-icon-like.active {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -18px;
+    width: 24px;
+    height: 22px;
+}
+.player-icon-like {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -40px;
+    width: 24px;
+    height: 22px;
+}
+.player-icon-liking {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px 0px;
+    width: 20px;
+    height: 18px;
+}
+.player-icon-locate:hover, .player-icon-locate.active {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -132px;
+    width: 19px;
+    height: 24px;
+}
+.player-icon-locate {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -108px;
+    width: 19px;
+    height: 24px;
+}
+.player-icon-next:hover, .player-icon-next.active {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -252px;
+    width: 32px;
+    height: 32px;
+}
+.player-icon-next {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -156px;
+    width: 32px;
+    height: 32px;
+}
+.player-icon-pause:hover, .player-icon-pause.active {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -334px;
+    width: 50px;
+    height: 50px;
+}
+.player-icon-pause {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -384px;
+    width: 50px;
+    height: 50px;
+}
+.player-icon-play:hover, .player-icon-play.active {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -434px;
+    width: 50px;
+    height: 50px;
+}
+.player-icon-play {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -284px;
+    width: 50px;
+    height: 50px;
+}
+.player-icon-prev:hover, .player-icon-prev.active {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -188px;
+    width: 32px;
+    height: 32px;
+}
+.player-icon-prev {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -220px;
+    width: 32px;
+    height: 32px;
+}
+.player-icon-share:hover, .player-icon-share.active {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -85px;
+    width: 22px;
+    height: 23px;
+}
+.player-icon-share {
+    background-image: url(../../images/sprites/player_sprite.png);
+    background-position: 0px -62px;
+    width: 22px;
+    height: 23px;
+}
