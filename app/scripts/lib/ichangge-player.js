@@ -16,6 +16,7 @@
     var options = {
         containerId: 'ichangge-player',
         playList: [],
+        defaultCoverUrl: 'images/player-cover-default.png',
         debug: true
     },
     currentSong,
@@ -180,15 +181,18 @@
     function fixLoadingButton(canPlay) {
         if (canPlay) {
             $mainContainer.find('.player-icon-play').removeClass('fa-spin');
+            $mainContainer.find('.player-icon-pause').removeClass('player-icon-play fa-spin');
         } else {
             $mainContainer.find('.player-icon-play').addClass('fa-spin');
+            $mainContainer.find('.jp-pause').hide();
+            $mainContainer.find('.jp-play').show();
         }
     }
 
     function updateCurrentSong() {
         currentSong = mainPlayer.playlist[mainPlayer.current];
         $mainContainer.find('.jp-cover').attr('src', 
-            currentSong.cover || 'images/player-cover-default.png');
+            currentSong.cover || options.defaultCoverUrl);
         console.log(currentSong);
     }
 
