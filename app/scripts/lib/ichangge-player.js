@@ -14,7 +14,7 @@
 
 var IChanggePlayer = (function($, jPlayerPlaylist) {
     var options = {
-        containerId: '#ichangge-player',
+        containerId: 'ichangge-player',
         playList: []
     }, $mainContainer;
 
@@ -25,7 +25,12 @@ var IChanggePlayer = (function($, jPlayerPlaylist) {
     };
 
     function createDOM(containerId) {
-        $mainContainer = $(containerId);
+        $mainContainer = $('#' + containerId);
+
+        if(!$mainContainer.length) {
+            $mainContainer = $('<div>').attr('id', containerId);
+            $('body').append($mainContainer);
+        }
     }
 
     return {
