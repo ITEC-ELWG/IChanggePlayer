@@ -61,11 +61,12 @@
         '</a>' +
         '<a class="jp-control-btn jp-play" href="javascript:void(0);" title="播放">' +
         '<i class="jp-icon player-icon-play"></i>' +
+        '<i class="jp-icon player-icon-loading"></i>' +
         '</a>' +
         '<a class="jp-control-btn jp-pause" href="javascript:void(0);" title="暂停">' +
         '<i class="jp-icon player-icon-pause"></i>' +
         '</a>' +
-        '<a class="fa-stack fa-lg jp-control-btn jp-next" href="javascript:void(0);" title="下一首">' +
+        '<a class="jp-control-btn jp-next" href="javascript:void(0);" title="下一首">' +
         '<i class="jp-icon player-icon-next"></i>' +
         '</a>' +
         '</div>' +
@@ -107,12 +108,7 @@
             },
             loadstart: function(e) {
                 log('Start loading...');
-                if (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i)) {
-                    console.log('detected iphone');
-                    changePlayButtonStyle(true);
-                } else {
-                    changePlayButtonStyle(false);
-                }
+                fixIPhonePlayButton();
             },
             error: function(e) {
                 log('error');
@@ -130,15 +126,15 @@
             },
             canplay: function(e) {
                 log('canplay');
-                changePlayButtonStyle(true);
+                fixLoadingButton(true);
             },
             play: function(e) {
                 log('play');
-                changePlayButtonStyle(false);
+                fixLoadingButton(false);
             },
             pause: function(e) {
                 log('pause');
-                changePlayButtonStyle(true);
+                fixLoadingButton(true);
             },
             durationchange: function(e) {
                 log('duration change');
@@ -163,13 +159,21 @@
         console.log(currentSong);
     }
 
-    function changePlayButtonStyle(canPlay) {
+    function fixIPhonePlayButton() {
+        if (navigator.userAgent.match(/iPhone/i) || 
+            navigator.userAgent.match(/iPad/i)) {
+            console.log('detected iphone');
+            fixLoadingButton(true);
+        } else {
+            fixLoadingButton(false);
+        }
+    }
+
+    function fixLoadingButton(canPlay) {
         if (canPlay) {
-        //     $mainContainer.find('.jp-play').find('i.fa-spin')
-        //         .removeClass('fa-spinner fa-spin').addClass('fa-play');
-        // } else {
-        //     $mainContainer.find('.jp-play').find('i.fa-play')
-        //         .removeClass('fa-play').addClass('fa-spinner fa-spin');
+            $mainContainer.find('.player-icon-play').removeClass('fa-spin');
+        } else {
+            $mainContainer.find('.player-icon-play').addClass('fa-spin');
         }
     }
 
