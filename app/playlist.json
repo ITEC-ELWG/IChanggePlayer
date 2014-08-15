@@ -4,34 +4,31 @@
         "title": "我的滑板鞋",
         "mp3": "http://ichangge-player-music.qiniudn.com/mp3/%E5%BA%9E%E9%BA%A6%E9%83%8E-%E6%88%91%E7%9A%84%E6%BB%91%E6%9D%BF%E9%9E%8B.mp3",
         "oga": "http://ichangge-player-music.qiniudn.com/ogg/%E5%BA%9E%E9%BA%A6%E9%83%8E-%E6%88%91%E7%9A%84%E6%BB%91%E6%9D%BF%E9%9E%8B.ogg",
-        "duration": "02:50"
+        "cover": "http://www.zgfznews.com/fznews/yule/yinyue/images/2014711368386.jpg"
     },
     {
         "artist": "beyond",
         "title": "我是愤怒",
         "mp3": "http://ichangge-player-music.qiniudn.com/mp3/beyond-%E6%88%91%E6%98%AF%E6%84%A4%E6%80%92.mp3",
-        "oga": "http://ichangge-player-music.qiniudn.com/ogg/beyond-%E6%88%91%E6%98%AF%E6%84%A4%E6%80%92.ogg",
-        "duration": "04:12"
+        "oga": "http://ichangge-player-music.qiniudn.com/ogg/beyond-%E6%88%91%E6%98%AF%E6%84%A4%E6%80%92.ogg"
     },
     {
         "artist": "陈奕迅",
         "title": "猜情寻",
         "mp3": "http://ichangge-player-music.qiniudn.com/mp3/%E9%99%88%E5%A5%95%E8%BF%85-%E7%8C%9C%E6%83%85%E5%AF%BB.mp3",
         "oga": "http://ichangge-player-music.qiniudn.com/ogg/%E9%99%88%E5%A5%95%E8%BF%85-%E7%8C%9C%E6%83%85%E5%AF%BB.ogg",
-        "duration": "04:07"
+        "cover": "http://img001.photo.21cn.com/photos/album/20080313/o/0EAD28886F082686DA74A2B8829B86E5.jpg"
     },
     {
         "artist": "Maroon 5",
         "title": "Maps",
         "mp3": "http://ichangge-player-music.qiniudn.com/mp3/Maroon5-Maps.mp3",
-        "oga": "http://ichangge-player-music.qiniudn.com/ogg/Maroon5-Maps.ogg",
-        "duration": "03:09"
+        "oga": "http://ichangge-player-music.qiniudn.com/ogg/Maroon5-Maps.ogg"
     },
     {
         "artist": "林宥嘉",
         "title": "我总是一个人在练习一个人",
         "mp3": "http://ichangge-player-music.qiniudn.com/mp3/%E6%9E%97%E5%AE%A5%E5%98%89-%E6%88%91%E6%80%BB%E6%98%AF%E4%B8%80%E4%B8%AA%E4%BA%BA%E5%9C%A8%E7%BB%83%E4%B9%A0%E4%B8%80%E4%B8%AA%E4%BA%BA.mp3",
-        "oga": "http://ichangge-player-music.qiniudn.com/ogg/%E6%9E%97%E5%AE%A5%E5%98%89-%E6%88%91%E6%80%BB%E6%98%AF%E4%B8%80%E4%B8%AA%E4%BA%BA%E5%9C%A8%E7%BB%83%E4%B9%A0%E4%B8%80%E4%B8%AA%E4%BA%BA.ogg",
-        "duration": "03:03"
+        "oga": "http://ichangge-player-music.qiniudn.com/ogg/%E6%9E%97%E5%AE%A5%E5%98%89-%E6%88%91%E6%80%BB%E6%98%AF%E4%B8%80%E4%B8%AA%E4%BA%BA%E5%9C%A8%E7%BB%83%E4%B9%A0%E4%B8%80%E4%B8%AA%E4%BA%BA.ogg"
     }
 ]

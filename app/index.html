@@ -2,84 +2,20 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
-    <link rel="stylesheet" href="/styles/lib/bootstrap.min.css">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/styles/lib/jplayer.css">
+    <link rel="stylesheet" href="/styles/lib/ichangge-player.css">
     <link rel="stylesheet" href="/styles/index.css">
 </head>
 <body>
     <div class="wrapper">
         <div id="logger"></div>
         <div id="ichangge-player"></div> 
-        <div id="ichangge-player-container" class="jp-audio">
-            <div class="container jp-gui">
-                <div class="jp-playlist">
-                    <ul></ul>
-                </div>
-                <div class="jp-controller">
-                    <div class="jp-controls pull-left">
-                        <a class="fa-stack fa-lg jp-control-btn jp-previous" href="javascript:void(0);" title="上一首">
-                            <i class="fa fa-circle fa-stack-2x"></i>
-                            <i class="fa fa-step-backward fa-stack-1x fa-inverse"></i>
-                        </a>
-                        <a class="fa-stack fa-lg jp-control-btn jp-play" href="javascript:void(0);" title="播放">
-                            <i class="fa fa-circle fa-stack-2x"></i>
-                            <i class="fa fa-spinner fa-spin fa-stack-1x fa-inverse"></i>
-                        </a>
-                        <a class="fa-stack fa-lg jp-control-btn jp-pause" href="javascript:void(0);" title="暂停">
-                            <i class="fa fa-circle fa-stack-2x"></i>
-                            <i class="fa fa-pause fa-stack-1x fa-inverse"></i>
-                        </a>
-                        <a class="fa-stack fa-lg jp-control-btn jp-next" href="javascript:void(0);" title="下一首">
-                            <i class="fa fa-circle fa-stack-2x"></i>
-                            <i class="fa fa-step-forward fa-stack-1x fa-inverse"></i>
-                        </a>
-                    </div>
-                    <div class="jp-details">
-                        <div class="jp-title">IChanggePlayer 0.1a</div>
-                        <div class="jp-progress">
-                            <div class="jp-seek-bar" style="width: 100%;">
-                                <div class="jp-play-bar" style="overflow: hidden; width: 0%;"></div>
-                                <div class="jp-play-bar-cursor"></div>
-                            </div>
-                        </div>
-                        <div class="jp-other-control pull-left">
-                            <a class="fa-stack jp-random jp-function-btn" href="javascript:void(0);">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-stack-1x fa-inverse fa-random"></i>
-                            </a>
-                            <a class="fa-stack jp-eject jp-function-btn" href="javascript:void(0);" data-toggle="false">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-stack-1x fa-inverse fa-eject"></i>
-                            </a>
-                        </div>
-                        <div class="jp-volume-control pull-right">
-                            <a class="jp-mute jp-function-btn" href="javascript:void(0);">
-                                <i class="fa fa-volume-up"></i>
-                            </a>
-                            <div class="jp-volume-bar">
-                                <div class="jp-volume-bar-value" style="width: 80%;"></div>
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="jp-no-solution">
-                    <span>抱歉，你的浏览器不支持此播放器</span>
-                    我们推荐你安装最新的<a href="https://www.google.com/intl/zh-CN/chrome/browser/" target="_blank">Chrome浏览器</a>，或安装<a href="http://get.adobe.com/cn/flashplayer/">Flash插件</a>，再重新尝试刷新本页面。
-                </div>
-            </div>
-            
-        </div>
     </div>
+    
     <script src="/scripts/lib/jquery.min.js"></script>
-    <script src="/scripts/lib/bootstrap.min.js"></script>
     <script src="/scripts/lib/jquery.jplayer.js"></script>
     <script src="/scripts/lib/jplayer.playlist.js"></script>
+    <script src="/scripts/lib/ichangge-player.js"></script>
     <script src="//localhost:35729/livereload.js"></script>
-    <script src="/scripts/main.js"></script>
+    <script src="/scripts/index.js"></script>
 </body>
 </html>
