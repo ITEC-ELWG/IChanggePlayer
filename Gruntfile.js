@@ -41,7 +41,8 @@ module.exports = function(grunt) {
             dist: {
                 src: [
                     'app/scripts/lib/jquery.jplayer.js',
-                    'app/scripts/lib/jplayer.playlist.js'
+                    'app/scripts/lib/jplayer.playlist.js',
+                    'app/scripts/lib/ichangge-player.js'
                 ],
                 dest: 'dist/ichangge-player.js'
             }
@@ -96,4 +97,5 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('default', ['concurrent:run']);
+    grunt.registerTask('deploy', ['concat']);
 };
