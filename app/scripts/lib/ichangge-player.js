@@ -27,6 +27,7 @@
             oga: 'oga',
             cover: 'cover'
         },
+        hasExtraControls: true,
         debug: false
     },
     currentSong,
@@ -101,6 +102,10 @@
         $mainContainer.append($(PLAYER_TEMPLATE));
         // 原先的$mainContainer是总容器，后面需要修正为包含DOM的容器
         $mainContainer = $('#ichangge-player-container');
+
+        if(!options.hasExtraControls) {
+            $mainContainer.find('.player-song-interactions').remove();
+        }
     }
 
     function initPlayer(playList) {
@@ -233,6 +238,13 @@
     }
 
     window.IChanggePlayer = {
-        init: init
+        init: init,
+        getPlayer: function() {
+            return mainPlayer;            
+        },
+        getPlayerDOM: function() {
+            return $mainContainer;
+        }
     };
+
 })(jQuery, jPlayerPlaylist);
