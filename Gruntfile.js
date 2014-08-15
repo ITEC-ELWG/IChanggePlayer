@@ -61,6 +61,12 @@ module.exports = function(grunt) {
                 cwd: '<%= config.app %>/images/',
                 src: '*',
                 dest: '<%= config.dist %>/images/'
+            },
+            swf: {
+                expand: true,
+                cwd: '<%= config.app %>/scripts/lib',
+                src: 'Jplayer.swf',
+                dest: '<%= config.dist %>/js'
             }
         },
         connect: {
