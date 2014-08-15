@@ -15,9 +15,19 @@
 (function($, jPlayerPlaylist, undefined) {
     var options = {
         containerId: 'ichangge-player',
+        format: 'mp3, oga',
+        solution: 'html, flash',
+        swfPath: 'scripts/lib/',
         playList: [],
         defaultCoverUrl: 'images/player-cover-default.png',
-        debug: true
+        dataAdapter: {
+            artist: 'artist',
+            title: 'title',
+            mp3: 'mp3',
+            oga: 'oga',
+            cover: 'cover'
+        },
+        debug: false
     },
     currentSong,
     $mainContainer, mainPlayer;
@@ -46,9 +56,9 @@
         '</div>' +
         '<div class="jp-details">' +
         '<div class="player-song-info">' +
-        '<p class="jp-title mb-5">雨还是不停的落下</p>' +
-        '<p class="jp-artist mb-5">孙燕姿</p>' +
-        '<p class="jp-duration mb-5">-1:30</p>' +
+        '<p class="jp-title mb-5"></p>' +
+        '<p class="jp-artist mb-5"></p>' +
+        '<p class="jp-duration mb-5"></p>' +
         '</div>' +
         '<!--             <div class="jp-progress">' +
         '<div class="jp-seek-bar" style="width: 100%;">' +
@@ -84,6 +94,8 @@
         if(!$mainContainer.length) {
             $mainContainer = $('<div>').attr('id', containerId);
             $('body').append($mainContainer);
+        } else {
+            $mainContainer.empty();
         }
 
         $mainContainer.append($(PLAYER_TEMPLATE));
@@ -92,13 +104,15 @@
     }
 
     function initPlayer(playList) {
+        playList = convertDataInterface(playList);
+        
         mainPlayer = new jPlayerPlaylist({
             jPlayer: '#ichangge-player-mock',
             cssSelectorAncestor: '#ichangge-player-container'
         }, playList, {
-            swfPath: "scripts/lib/",
-            solution: "html, flash",
-            supplied: "mp3, oga",
+            swfPath: options.swfPath,
+            solution: options.solution,
+            supplied: options.format,
             volume: 0.8,
             wmode: "window",
             cssSelectorAncestor: "#ichangge-player-container",
@@ -116,9 +130,7 @@
                 fixIPhonePlayButton();
             },
             error: function(e) {
-                log('error');
-                log(e.toString());
-                console.debug(e);
+                log(e.jPlayer.error);
             },
             loadeddata: function(event) {
                 log('loadeddata');
@@ -194,6 +206,21 @@
         $mainContainer.find('.jp-cover').attr('src', 
             currentSong.cover || options.defaultCoverUrl);
         console.log(currentSong);
+    }
+
+    function convertDataInterface(playList) {
+        var adapter = options.dataAdapter,
+            cleanPlayList = [],
+            item, src, dst, i;
+
+        for(i = 0; i < playList.length; i++) {
+            item = {};
+            for(src in options.dataAdapter) {
+                item[src] = playList[i][adapter[src]];
+            }
+            cleanPlayList.push(item);
+        }
+        return cleanPlayList;
     }
 
     function log(msg) {

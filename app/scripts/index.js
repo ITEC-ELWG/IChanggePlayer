@@ -10,4 +10,11 @@ $(document).ready(function() {
         });
     });
     
+    window.test = function() {
+        $.getJSON('/test.json', function(data) {
+            IChanggePlayer.init({
+                playList: data
+            });
+        });
+    };
 });
