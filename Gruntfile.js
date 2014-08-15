@@ -37,6 +37,7 @@ module.exports = function(grunt) {
                 }
             }
         },
+        // 将jplayer，jplayer的playlist扩展和封装模块合并为一个文件
         concat: {
             dist: {
                 src: [
@@ -44,7 +45,22 @@ module.exports = function(grunt) {
                     'app/scripts/lib/jplayer.playlist.js',
                     'app/scripts/lib/ichangge-player.js'
                 ],
-                dest: 'dist/ichangge-player.js'
+                dest: 'dist/js/ichangge-player.js'
+            }
+        },
+        // 复制必要的静态文件到发布文件夹中
+        copy: {
+            css: {
+                expand: true,
+                cwd: '<%= config.app %>/styles/lib/',
+                src: 'ichangge-player.css',
+                dest: '<%= config.dist %>/css/'
+            },
+            img: {
+                expand: true,
+                cwd: '<%= config.app %>/images/',
+                src: '*',
+                dest: '<%= config.dist %>/images/'
             }
         },
         connect: {
@@ -97,5 +113,5 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('default', ['concurrent:run']);
-    grunt.registerTask('deploy', ['concat']);
+    grunt.registerTask('deploy', ['concat', 'copy']);
 };
