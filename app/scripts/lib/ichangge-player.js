@@ -31,13 +31,14 @@
         debug: false
     },
     currentSong,
-    $mainContainer, mainPlayer;
+    $mainContainer, $mockPlayer, mainPlayer;
 
     var init = function(opts) {
         $.extend(options, opts);
 
         createDOM(options.containerId);
         initPlayer(options.playList);
+        initCirclePlayer();
         bindEvents();
     };
 
@@ -47,7 +48,7 @@
         '<div id="ichangge-player-container" class="jp-audio">' +
         '<div class="container jp-gui jp-image-circular">' +
         '<div class="song-cover-container jp-image-wrapper jp-image-circular">' +
-        '<img src="images/player-cover-default.png" class="jp-cover jp-image-present">' +
+        '<img src="' + options.defaultCoverUrl + '" class="jp-cover jp-image-present">' +
         '<div class="song-cover-shade player-cover-shade"></div>' +
         '</div>' +
         '<div class="player-song-interactions">' +
@@ -102,6 +103,7 @@
         $mainContainer.append($(PLAYER_TEMPLATE));
         // 原先的$mainContainer是总容器，后面需要修正为包含DOM的容器
         $mainContainer = $('#ichangge-player-container');
+        $mockPlayer = $('#ichangge-player-mock');
 
         if(!options.hasExtraControls) {
             $mainContainer.find('.player-song-interactions').remove();
@@ -148,15 +150,13 @@
             },
             canplay: function(e) {
                 log('canplay');
-                fixLoadingButton(true);
+                fixLoadingButton(false);
             },
             play: function(e) {
                 log('play');
-                fixLoadingButton(false);
             },
             pause: function(e) {
                 log('pause');
-                fixLoadingButton(true);
             },
             durationchange: function(e) {
                 log('duration change');
@@ -164,24 +164,44 @@
         });
     }
 
-    function selectSong(index, canPlay) {
+    var selectSong = function(index, immediately) {
         if (index === 'next') {
             mainPlayer.next();
         } else if (index === 'previous') {
             mainPlayer.previous();
         } else {
-            if (canPlay) {
+            if (immediately) {
                 mainPlayer.play(index);
             } else {
                 mainPlayer.select(index);
             }
         }
         updateCurrentSong();
+    };
+
+    function initCirclePlayer() {
+        var CIRCLE_TEMPLATE = '<div id="cp_container_1" class="cp-container">' +
+        '<div class="cp-buffer-holder">' +
+        '<div class="cp-buffer-1"></div>' +
+        '<div class="cp-buffer-2"></div>' +
+        '</div>' +
+        '<div class="cp-progress-holder">' +
+        '<div class="cp-progress-1"></div>' +
+        '<div class="cp-progress-2"></div>' +
+        '</div>' +
+        '<div class="cp-circle-control"></div>' + 
+        '</div>';
+
+        $('#ichangge-player-container').append($(CIRCLE_TEMPLATE));
+
+        var circlePlayer = new CirclePlayer('#ichangge-player-mock', {
+            cssSelectorAncestor: '#cp_container_1'
+        });
     }
 
     function bindEvents() {
-        $mainContainer.find('.jp-next, .jp-previous').on('click', function() {
-            updateCurrentSong();
+        $mockPlayer.on($.jPlayer.event.setmedia, function(e) {
+           updateCurrentSong();
         });
     }
 
@@ -189,20 +209,17 @@
         if (navigator.userAgent.match(/iPhone/i) || 
             navigator.userAgent.match(/iPad/i)) {
             console.log('detected iphone');
-            fixLoadingButton(true);
-        } else {
             fixLoadingButton(false);
+        } else {
+            fixLoadingButton(true);
         }
     }
 
-    function fixLoadingButton(canPlay) {
-        if (canPlay) {
-            $mainContainer.find('.player-icon-play').removeClass('fa-spin');
-            $mainContainer.find('.player-icon-pause').removeClass('player-icon-play fa-spin');
-        } else {
+    function fixLoadingButton(isLoading) {
+        if (isLoading) {
             $mainContainer.find('.player-icon-play').addClass('fa-spin');
-            $mainContainer.find('.jp-pause').hide();
-            $mainContainer.find('.jp-play').show();
+        } else {
+            $mainContainer.find('.player-icon-play').removeClass('fa-spin');
         }
     }
 
@@ -239,6 +256,7 @@
 
     window.IChanggePlayer = {
         init: init,
+        select: selectSong,
         getPlayer: function() {
             return mainPlayer;            
         },
