@@ -4367,8 +4367,525 @@ Includes fix for IE
 		});
 	};
 })(jQuery);
-/* Modernizr custom build of 1.7pre: csstransforms */
-window.Modernizr=function(a,b,c){function G(){}function F(a,b){var c=a.charAt(0).toUpperCase()+a.substr(1),d=(a+" "+p.join(c+" ")+c).split(" ");return!!E(d,b)}function E(a,b){for(var d in a)if(k[a[d]]!==c&&(!b||b(a[d],j)))return!0}function D(a,b){return(""+a).indexOf(b)!==-1}function C(a,b){return typeof a===b}function B(a,b){return A(o.join(a+";")+(b||""))}function A(a){k.cssText=a}var d="1.7pre",e={},f=!0,g=b.documentElement,h=b.head||b.getElementsByTagName("head")[0],i="modernizr",j=b.createElement(i),k=j.style,l=b.createElement("input"),m=":)",n=Object.prototype.toString,o=" -webkit- -moz- -o- -ms- -khtml- ".split(" "),p="Webkit Moz O ms Khtml".split(" "),q={svg:"http://www.w3.org/2000/svg"},r={},s={},t={},u=[],v,w=function(a){var c=b.createElement("style"),d=b.createElement("div"),e;c.textContent=a+"{#modernizr{height:3px}}",h.appendChild(c),d.id="modernizr",g.appendChild(d),e=d.offsetHeight===3,c.parentNode.removeChild(c),d.parentNode.removeChild(d);return!!e},x=function(){function d(d,e){e=e||b.createElement(a[d]||"div");var f=(d="on"+d)in e;f||(e.setAttribute||(e=b.createElement("div")),e.setAttribute&&e.removeAttribute&&(e.setAttribute(d,""),f=C(e[d],"function"),C(e[d],c)||(e[d]=c),e.removeAttribute(d))),e=null;return f}var a={select:"input",change:"input",submit:"form",reset:"form",error:"img",load:"img",abort:"img"};return d}(),y=({}).hasOwnProperty,z;C(y,c)||C(y.call,c)?z=function(a,b){return b in a&&C(a.constructor.prototype[b],c)}:z=function(a,b){return y.call(a,b)},r.csstransforms=function(){return!!E(["transformProperty","WebkitTransform","MozTransform","OTransform","msTransform"])};for(var H in r)z(r,H)&&(v=H.toLowerCase(),e[v]=r[H](),u.push((e[v]?"":"no-")+v));e.input||G(),e.crosswindowmessaging=e.postmessage,e.historymanagement=e.history,e.addTest=function(a,b){a=a.toLowerCase();if(!e[a]){b=!!b(),g.className+=" "+(b?"":"no-")+a,e[a]=b;return e}},A(""),j=l=null,e._enableHTML5=f,e._version=d,g.className=g.className.replace(/\bno-js\b/,"")+" js "+u.join(" ");return e}(this,this.document)
+/* Modernizr 2.8.3 (Custom Build) | MIT & BSD
+ * Build: http://modernizr.com/download/#-csstransforms-csstransforms3d-teststyles-testprop-testallprops-prefixes-domprefixes
+ */
+;
+
+
+
+window.Modernizr = (function( window, document, undefined ) {
+
+    var version = '2.8.3',
+
+    Modernizr = {},
+
+
+    docElement = document.documentElement,
+
+    mod = 'modernizr',
+    modElem = document.createElement(mod),
+    mStyle = modElem.style,
+
+    inputElem  ,
+
+
+    toString = {}.toString,
+
+    prefixes = ' -webkit- -moz- -o- -ms- '.split(' '),
+
+
+
+    omPrefixes = 'Webkit Moz O ms',
+
+    cssomPrefixes = omPrefixes.split(' '),
+
+    domPrefixes = omPrefixes.toLowerCase().split(' '),
+
+
+    tests = {},
+    inputs = {},
+    attrs = {},
+
+    classes = [],
+
+    slice = classes.slice,
+
+    featureName, 
+
+
+    injectElementWithStyles = function( rule, callback, nodes, testnames ) {
+
+      var style, ret, node, docOverflow,
+          div = document.createElement('div'),
+                body = document.body,
+                fakeBody = body || document.createElement('body');
+
+      if ( parseInt(nodes, 10) ) {
+                      while ( nodes-- ) {
+              node = document.createElement('div');
+              node.id = testnames ? testnames[nodes] : mod + (nodes + 1);
+              div.appendChild(node);
+          }
+      }
+
+                style = ['&#173;','<style id="s', mod, '">', rule, '</style>'].join('');
+      div.id = mod;
+          (body ? div : fakeBody).innerHTML += style;
+      fakeBody.appendChild(div);
+      if ( !body ) {
+                fakeBody.style.background = '';
+                fakeBody.style.overflow = 'hidden';
+          docOverflow = docElement.style.overflow;
+          docElement.style.overflow = 'hidden';
+          docElement.appendChild(fakeBody);
+      }
+
+      ret = callback(div, rule);
+        if ( !body ) {
+          fakeBody.parentNode.removeChild(fakeBody);
+          docElement.style.overflow = docOverflow;
+      } else {
+          div.parentNode.removeChild(div);
+      }
+
+      return !!ret;
+
+    },
+    _hasOwnProperty = ({}).hasOwnProperty, hasOwnProp;
+
+    if ( !is(_hasOwnProperty, 'undefined') && !is(_hasOwnProperty.call, 'undefined') ) {
+      hasOwnProp = function (object, property) {
+        return _hasOwnProperty.call(object, property);
+      };
+    }
+    else {
+      hasOwnProp = function (object, property) { 
+        return ((property in object) && is(object.constructor.prototype[property], 'undefined'));
+      };
+    }
+
+
+    if (!Function.prototype.bind) {
+      Function.prototype.bind = function bind(that) {
+
+        var target = this;
+
+        if (typeof target != "function") {
+            throw new TypeError();
+        }
+
+        var args = slice.call(arguments, 1),
+            bound = function () {
+
+            if (this instanceof bound) {
+
+              var F = function(){};
+              F.prototype = target.prototype;
+              var self = new F();
+
+              var result = target.apply(
+                  self,
+                  args.concat(slice.call(arguments))
+              );
+              if (Object(result) === result) {
+                  return result;
+              }
+              return self;
+
+            } else {
+
+              return target.apply(
+                  that,
+                  args.concat(slice.call(arguments))
+              );
+
+            }
+
+        };
+
+        return bound;
+      };
+    }
+
+    function setCss( str ) {
+        mStyle.cssText = str;
+    }
+
+    function setCssAll( str1, str2 ) {
+        return setCss(prefixes.join(str1 + ';') + ( str2 || '' ));
+    }
+
+    function is( obj, type ) {
+        return typeof obj === type;
+    }
+
+    function contains( str, substr ) {
+        return !!~('' + str).indexOf(substr);
+    }
+
+    function testProps( props, prefixed ) {
+        for ( var i in props ) {
+            var prop = props[i];
+            if ( !contains(prop, "-") && mStyle[prop] !== undefined ) {
+                return prefixed == 'pfx' ? prop : true;
+            }
+        }
+        return false;
+    }
+
+    function testDOMProps( props, obj, elem ) {
+        for ( var i in props ) {
+            var item = obj[props[i]];
+            if ( item !== undefined) {
+
+                            if (elem === false) return props[i];
+
+                            if (is(item, 'function')){
+                                return item.bind(elem || obj);
+                }
+
+                            return item;
+            }
+        }
+        return false;
+    }
+
+    function testPropsAll( prop, prefixed, elem ) {
+
+        var ucProp  = prop.charAt(0).toUpperCase() + prop.slice(1),
+            props   = (prop + ' ' + cssomPrefixes.join(ucProp + ' ') + ucProp).split(' ');
+
+            if(is(prefixed, "string") || is(prefixed, "undefined")) {
+          return testProps(props, prefixed);
+
+            } else {
+          props = (prop + ' ' + (domPrefixes).join(ucProp + ' ') + ucProp).split(' ');
+          return testDOMProps(props, prefixed, elem);
+        }
+    }
+
+
+    tests['csstransforms'] = function() {
+        return !!testPropsAll('transform');
+    };
+
+
+    tests['csstransforms3d'] = function() {
+
+        var ret = !!testPropsAll('perspective');
+
+                        if ( ret && 'webkitPerspective' in docElement.style ) {
+
+                      injectElementWithStyles('@media (transform-3d),(-webkit-transform-3d){#modernizr{left:9px;position:absolute;height:3px;}}', function( node, rule ) {
+            ret = node.offsetLeft === 9 && node.offsetHeight === 3;
+          });
+        }
+        return ret;
+    };
+    for ( var feature in tests ) {
+        if ( hasOwnProp(tests, feature) ) {
+                                    featureName  = feature.toLowerCase();
+            Modernizr[featureName] = tests[feature]();
+
+            classes.push((Modernizr[featureName] ? '' : 'no-') + featureName);
+        }
+    }
+
+
+
+     Modernizr.addTest = function ( feature, test ) {
+       if ( typeof feature == 'object' ) {
+         for ( var key in feature ) {
+           if ( hasOwnProp( feature, key ) ) {
+             Modernizr.addTest( key, feature[ key ] );
+           }
+         }
+       } else {
+
+         feature = feature.toLowerCase();
+
+         if ( Modernizr[feature] !== undefined ) {
+                                              return Modernizr;
+         }
+
+         test = typeof test == 'function' ? test() : test;
+
+         if (typeof enableClasses !== "undefined" && enableClasses) {
+           docElement.className += ' ' + (test ? '' : 'no-') + feature;
+         }
+         Modernizr[feature] = test;
+
+       }
+
+       return Modernizr; 
+     };
+
+
+    setCss('');
+    modElem = inputElem = null;
+
+
+    Modernizr._version      = version;
+
+    Modernizr._prefixes     = prefixes;
+    Modernizr._domPrefixes  = domPrefixes;
+    Modernizr._cssomPrefixes  = cssomPrefixes;
+
+
+
+    Modernizr.testProp      = function(prop){
+        return testProps([prop]);
+    };
+
+    Modernizr.testAllProps  = testPropsAll;
+
+
+    Modernizr.testStyles    = injectElementWithStyles;
+    return Modernizr;
+
+})(this, this.document);
+;
+/*
+ * CirclePlayer for the jPlayer Plugin (jQuery)
+ * http://www.jplayer.org
+ *
+ * Copyright (c) 2009 - 2012 Happyworm Ltd
+ * Dual licensed under the MIT and GPL licenses.
+ *  - http://www.opensource.org/licenses/mit-license.php
+ *  - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Version: 1.0.1 (jPlayer 2.1.0+)
+ * Date: 30th May 2011
+ *
+ * Author: Mark J Panaghiston @thepag
+ *
+ * CirclePlayer prototype developed by:
+ * Mark Boas @maboa
+ * Silvia Benvenuti @aulentina
+ * Jussi Kalliokoski @quinirill
+ *
+ * Inspired by :
+ * Neway @imneway http://imneway.net/ http://forrst.com/posts/Untitled-CPt
+ * and
+ * Liam McKay @liammckay http://dribbble.com/shots/50882-Purple-Play-Pause
+ *
+ * Standing on the shoulders of :
+ * John Resig @jresig
+ * Mark Panaghiston @thepag
+ * Louis-Rémi Babé @Louis_Remi
+ */
+
+
+var CirclePlayer = function(jPlayerSelector, options) {
+	var	self = this,
+
+		defaults = {
+			// solution: "flash, html", // For testing Flash with CSS3
+			supplied: "m4a, oga",
+			// Android 2.3 corrupts media element if preload:"none" is used.
+			// preload: "none", // No point preloading metadata since no times are displayed. It helps keep the buffer state correct too.
+			cssSelectorAncestor: "#cp_container_1",
+			cssSelector: {
+				play: ".cp-play",
+				pause: ".cp-pause"
+			}
+		},
+
+		cssSelector = {
+			bufferHolder: ".cp-buffer-holder",
+			buffer1: ".cp-buffer-1",
+			buffer2: ".cp-buffer-2",
+			progressHolder: ".cp-progress-holder",
+			progress1: ".cp-progress-1",
+			progress2: ".cp-progress-2",
+			circleControl: ".cp-circle-control"
+		};
+
+	this.cssClass = {
+		gt50: "cp-gt50",
+		fallback: "cp-fallback"
+	};
+
+	this.spritePitch = 104;
+	this.spriteRatio = 0.24; // Number of steps / 100
+
+	this.player = $(jPlayerSelector);
+	this.options = $.extend(true, {}, defaults, options); // Deep copy
+
+	this.cssTransforms = Modernizr.csstransforms;
+	this.audio = {};
+	this.dragging = false; // Indicates if the progressbar is being 'dragged'.
+
+	this.eventNamespace = ".CirclePlayer"; // So the events can easily be removed in destroy.
+
+	this.jq = {};
+	$.each(cssSelector, function(entity, cssSel) {
+		self.jq[entity] = $(self.options.cssSelectorAncestor + " " + cssSel);
+	});
+
+	this._initSolution();
+	this._initPlayer();
+};
+
+CirclePlayer.prototype = {
+	_createHtml: function() {
+	},
+	_initPlayer: function() {
+		var self = this;
+		// this.player.jPlayer(this.options);
+
+		this.player.bind($.jPlayer.event.ready + this.eventNamespace, function(event) {
+			if(event.jPlayer.html.used && event.jPlayer.html.audio.available) {
+				self.audio = $(this).data("jPlayer").htmlElement.audio;
+			}
+			self._initCircleControl();
+		});
+
+		this.player.bind($.jPlayer.event.play + this.eventNamespace, function(event) {
+			$(this).jPlayer("pauseOthers");
+		});
+
+		// This event fired as play time increments
+		this.player.bind($.jPlayer.event.timeupdate + this.eventNamespace, function(event) {
+			if (!self.dragging) {
+				self._timeupdate(event.jPlayer.status.currentPercentAbsolute);
+			}
+		});
+
+		// This event fired as buffered time increments
+		this.player.bind($.jPlayer.event.progress + this.eventNamespace, function(event) {
+			var percent = 0;
+			if((typeof self.audio.buffered === "object") && (self.audio.buffered.length > 0)) {
+				if(self.audio.duration > 0) {
+					var bufferTime = 0;
+					for(var i = 0; i < self.audio.buffered.length; i++) {
+						bufferTime += self.audio.buffered.end(i) - self.audio.buffered.start(i);
+						// console.log(i + " | start = " + self.audio.buffered.start(i) + " | end = " + self.audio.buffered.end(i) + " | bufferTime = " + bufferTime + " | duration = " + self.audio.duration);
+					}
+					percent = 100 * bufferTime / self.audio.duration;
+				} // else the Metadata has not been read yet.
+				// console.log("percent = " + percent);
+			} else { // Fallback if buffered not supported
+				// percent = event.jPlayer.status.seekPercent;
+				percent = 0; // Cleans up the inital conditions on all browsers, since seekPercent defaults to 100 when object is undefined.
+			}
+			self._progress(percent); // Problem here at initial condition. Due to the Opera clause above of buffered.length > 0 above... Removing it means Opera's white buffer ring never shows like with polyfill.
+			// Firefox 4 does not always give the final progress event when buffered = 100%
+		});
+
+		this.player.bind($.jPlayer.event.ended + this.eventNamespace, function(event) {
+			self._resetSolution();
+		});
+	},
+	_initSolution: function() {
+		if (this.cssTransforms) {
+			this.jq.progressHolder.show();
+			this.jq.bufferHolder.show();
+		}
+		else {
+			this.jq.progressHolder.addClass(this.cssClass.gt50).show();
+			this.jq.progress1.addClass(this.cssClass.fallback);
+			this.jq.progress2.hide();
+			this.jq.bufferHolder.hide();
+		}
+		this._resetSolution();
+	},
+	_resetSolution: function() {
+		if (this.cssTransforms) {
+			this.jq.progressHolder.removeClass(this.cssClass.gt50);
+			this.jq.progress1.css({'transform': 'rotate(0deg)'});
+			this.jq.progress2.css({'transform': 'rotate(0deg)'}).hide();
+		}
+		else {
+			this.jq.progress1.css('background-position', '0 ' + this.spritePitch + 'px');
+		}
+	},
+	_initCircleControl: function() {
+		var self = this;
+		this.jq.circleControl.grab({
+			onstart: function(){
+				self.dragging = true;
+			}, onmove: function(event){
+				var pc = self._getArcPercent(event.position.x, event.position.y);
+				self.player.jPlayer("playHead", pc).jPlayer("play");
+				self._timeupdate(pc);
+			}, onfinish: function(event){
+				self.dragging = false;
+				var pc = self._getArcPercent(event.position.x, event.position.y);
+				self.player.jPlayer("playHead", pc).jPlayer("play");
+			}
+		});
+	},
+	_timeupdate: function(percent) {
+		var degs = percent * 3.6+"deg";
+
+		var spriteOffset = (Math.floor((Math.round(percent))*this.spriteRatio)-1)*-this.spritePitch;
+
+		if (percent <= 50) {
+			if (this.cssTransforms) {
+				this.jq.progressHolder.removeClass(this.cssClass.gt50);
+				this.jq.progress1.css({'transform': 'rotate(' + degs + ')'});
+				this.jq.progress2.hide();
+			} else { // fall back
+				this.jq.progress1.css('background-position', '0 '+spriteOffset+'px');
+			}
+		} else if (percent <= 100) {
+			if (this.cssTransforms) {
+				this.jq.progressHolder.addClass(this.cssClass.gt50);
+				this.jq.progress1.css({'transform': 'rotate(180deg)'});
+				this.jq.progress2.css({'transform': 'rotate(' + degs + ')'});
+				this.jq.progress2.show();
+			} else { // fall back
+				this.jq.progress1.css('background-position', '0 '+spriteOffset+'px');
+			}
+		}
+	},
+	_progress: function(percent) {
+		var degs;
+
+		percent = percent > 100 ? 100 : percent;
+		degs = percent * 3.6 + "deg";
+		if (this.cssTransforms) {
+			if (percent <= 50) {
+				this.jq.bufferHolder.removeClass(this.cssClass.gt50);
+				this.jq.buffer1.css({'transform': 'rotate(' + degs + ')'});
+				this.jq.buffer2.hide();
+			} else if (percent <= 100) {
+				this.jq.bufferHolder.addClass(this.cssClass.gt50);
+				this.jq.buffer1.css({'transform': 'rotate(180deg)'});
+				this.jq.buffer2.show();
+				this.jq.buffer2.css({'transform': 'rotate(' + degs + ')'});
+			}
+		}
+	},
+	_getArcPercent: function(pageX, pageY) {
+		var	offset	= this.jq.circleControl.offset(),
+			x	= pageX - offset.left - this.jq.circleControl.width()/2,
+			y	= pageY - offset.top - this.jq.circleControl.height()/2,
+			theta	= Math.atan2(y,x);
+
+		if (theta > -1 * Math.PI && theta < -0.5 * Math.PI) {
+			theta = 2 * Math.PI + theta;
+		}
+
+		// theta is now value between -0.5PI and 1.5PI
+		// ready to be normalized and applied
+
+		return (theta + Math.PI / 2) / 2 * Math.PI * 10;
+	},
+	play: function(time) {
+		this.player.jPlayer("play", time);
+	},
+	pause: function(time) {
+		this.player.jPlayer("pause", time);
+	},
+	destroy: function() {
+		this.player.unbind(this.eventNamespace);
+		this.player.jPlayer("destroy");
+	}
+};
+
 /*
  * 爱唱歌播放器
  * https://github.com/ITEC-ELWG/IChanggePlayer
@@ -4422,7 +4939,6 @@ window.Modernizr=function(a,b,c){function G(){}function F(a,b){var c=a.charAt(0)
         '<img src="' + options.defaultCoverUrl + '" alt="" class="jp-cover jp-image-present">' +
         '<div class="song-cover-shade player-cover-shade"></div>' +
         '</div>' +
-        // '<div class="player-song-board">' +
         '<div class="player-song-interactions">' +
         '<i class="jp-icon player-icon-share mr-5"></i>' +
         '<i class="jp-icon player-icon-like mr-5"></i>' +
@@ -4435,7 +4951,6 @@ window.Modernizr=function(a,b,c){function G(){}function F(a,b){var c=a.charAt(0)
         '<p class="jp-duration mb-5"></p>' +
         '</div>' +
         '</div>' +
-        // '</div>' +
         '<div class="jp-controller player-song-actions">' +
         '<div class="jp-controls">' +
         '<a class="jp-control-btn jp-previous" href="javascript:void(0);" title="上一首">' +
@@ -4543,7 +5058,6 @@ window.Modernizr=function(a,b,c){function G(){}function F(a,b){var c=a.charAt(0)
                 mainPlayer.select(index);
             }
         }
-        updateCurrentSong();
     };
 
     function initCirclePlayer() {
@@ -4575,7 +5089,7 @@ window.Modernizr=function(a,b,c){function G(){}function F(a,b){var c=a.charAt(0)
     function fixIPhonePlayButton() {
         if (navigator.userAgent.match(/iPhone/i) || 
             navigator.userAgent.match(/iPad/i)) {
-            console.log('detected iphone');
+            log('detected iphone');
             fixLoadingButton(false);
         } else {
             fixLoadingButton(true);
@@ -4597,10 +5111,9 @@ window.Modernizr=function(a,b,c){function G(){}function F(a,b){var c=a.charAt(0)
         if(currentSong.cover) {
             $cover.attr('src', currentSong.cover).show();
         } else {
-            // $cover.attr('src', options.defaultCoverUrl);
             $cover.hide();
         }
-        console.log(currentSong);
+        log(currentSong);
     }
 
     function convertDataInterface(playList) {
@@ -4620,9 +5133,6 @@ window.Modernizr=function(a,b,c){function G(){}function F(a,b){var c=a.charAt(0)
 
     function log(msg) {
         if (options.debug) {
-            $('#logger').prepend('<p>' + msg + '</p>');
-            console.debug(msg);
-        } else {
             console.debug(msg);
         }
     }

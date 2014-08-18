@@ -42,7 +42,7 @@
 .jp-image-present {
     display: block;
     width: 180px;
-    /*min-height: 180px;*/
+    min-height: 180px;
 }
 
 .mb-5 {

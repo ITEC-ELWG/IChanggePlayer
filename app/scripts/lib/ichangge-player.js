@@ -51,7 +51,6 @@
         '<img src="' + options.defaultCoverUrl + '" alt="" class="jp-cover jp-image-present">' +
         '<div class="song-cover-shade player-cover-shade"></div>' +
         '</div>' +
-        // '<div class="player-song-board">' +
         '<div class="player-song-interactions">' +
         '<i class="jp-icon player-icon-share mr-5"></i>' +
         '<i class="jp-icon player-icon-like mr-5"></i>' +
@@ -64,7 +63,6 @@
         '<p class="jp-duration mb-5"></p>' +
         '</div>' +
         '</div>' +
-        // '</div>' +
         '<div class="jp-controller player-song-actions">' +
         '<div class="jp-controls">' +
         '<a class="jp-control-btn jp-previous" href="javascript:void(0);" title="上一首">' +
@@ -172,7 +170,6 @@
                 mainPlayer.select(index);
             }
         }
-        updateCurrentSong();
     };
 
     function initCirclePlayer() {
@@ -204,7 +201,7 @@
     function fixIPhonePlayButton() {
         if (navigator.userAgent.match(/iPhone/i) || 
             navigator.userAgent.match(/iPad/i)) {
-            console.log('detected iphone');
+            log('detected iphone');
             fixLoadingButton(false);
         } else {
             fixLoadingButton(true);
@@ -226,10 +223,9 @@
         if(currentSong.cover) {
             $cover.attr('src', currentSong.cover).show();
         } else {
-            // $cover.attr('src', options.defaultCoverUrl);
             $cover.hide();
         }
-        console.log(currentSong);
+        log(currentSong);
     }
 
     function convertDataInterface(playList) {
@@ -249,9 +245,6 @@
 
     function log(msg) {
         if (options.debug) {
-            $('#logger').prepend('<p>' + msg + '</p>');
-            console.debug(msg);
-        } else {
             console.debug(msg);
         }
     }

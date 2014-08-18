@@ -6,15 +6,8 @@ $(document).ready(function() {
 
     $.getJSON('/playlist.json', function(data) {
         IChanggePlayer.init({
-            playList: data
+            playList: data,
+            debug: true
         });
     });
-    
-    window.test = function() {
-        $.getJSON('/test.json', function(data) {
-            IChanggePlayer.init({
-                playList: data
-            });
-        });
-    };
 });
