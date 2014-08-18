@@ -2,10 +2,9 @@
  * z-index list
  *
  * .player-song-actions: 188
- * .cp-container: 187
- * .player-song-board: 186;
  * .player-song-interactions: 186
  * .player-song-info: 186
+ * .jp-control-btn: 184;
  * .cp-circle-control: 180
  */
 
@@ -87,28 +86,39 @@
 }
 .player-song-info {
     position: absolute;
-    width: 180px;
-    left: 10px;
+    width: 150px;
+    left: 25px;
     bottom: 40px;
     text-align: center;
     color: #ffffff;
     z-index: 186;
 }
 .player-song-actions {
-    position: absolute;
-    left: 25px;
-    bottom: -20px;
+    /*position: absolute;*/
+    /*left: 25px;*/
+    /*bottom: -20px;*/
     z-index: 188;
 }
 .jp-controls {
     font-size: 0;
 }
-.jp-controls a {
+.jp-control-btn {
+    position: absolute;
     vertical-align: top;
     display: inline-block;
+    z-index: 184;
+}
+.jp-previous {
+    left: 32px;
+    bottom: 10px;
+}
+.jp-next {
+    right: 32px;
+    bottom: 10px;
 }
 .jp-play, .jp-pause {
-    margin: 10px 15px 0;
+    left: 75px;
+    bottom: -18px;
 }
 
 /* @end: controls */
@@ -286,7 +296,6 @@
     top: 0;
     width: 200px;
     height: 200px;
-    z-index: 187;
 }
 
 .cp-container :focus {
