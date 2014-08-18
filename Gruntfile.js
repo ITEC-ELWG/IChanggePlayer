@@ -41,9 +41,13 @@ module.exports = function(grunt) {
         concat: {
             dist: {
                 src: [
-                    'app/scripts/lib/jquery.jplayer.js',
-                    'app/scripts/lib/jplayer.playlist.js',
-                    'app/scripts/lib/ichangge-player.js'
+                    config.app + '/scripts/lib/jquery.jplayer.js',
+                    config.app + '/scripts/lib/jplayer.playlist.js',
+                    config.app + '/scripts/lib/jplayer.playlist.js',
+                    config.app + '/scripts/lib/jquery.transform2d.js',
+                    config.app + '/scripts/lib/jquery.grab.js',
+                    config.app + '/scripts/lib/mod.csstransforms.min.js',
+                    config.app + '/scripts/lib/ichangge-player.js'
                 ],
                 dest: 'dist/js/ichangge-player.js'
             }
