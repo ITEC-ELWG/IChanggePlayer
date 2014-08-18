@@ -19,7 +19,7 @@
         solution: 'html, flash',
         swfPath: 'scripts/lib/',
         playList: [],
-        defaultCoverUrl: 'images/player-cover-default.png',
+        defaultCoverUrl: 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D',
         dataAdapter: {
             artist: 'artist',
             title: 'title',
@@ -47,10 +47,11 @@
         '<div id="ichangge-player-mock"></div>' + 
         '<div id="ichangge-player-container" class="jp-audio">' +
         '<div class="container jp-gui jp-image-circular">' +
-        '<div class="song-cover-container jp-image-wrapper jp-image-circular">' +
-        '<img src="' + options.defaultCoverUrl + '" class="jp-cover jp-image-present">' +
+        '<div class="song-cover-container player-default-cover jp-image-wrapper jp-image-circular">' +
+        '<img src="' + options.defaultCoverUrl + '" alt="" class="jp-cover jp-image-present">' +
         '<div class="song-cover-shade player-cover-shade"></div>' +
         '</div>' +
+        // '<div class="player-song-board">' +
         '<div class="player-song-interactions">' +
         '<i class="jp-icon player-icon-share mr-5"></i>' +
         '<i class="jp-icon player-icon-like mr-5"></i>' +
@@ -62,13 +63,8 @@
         '<p class="jp-artist mb-5"></p>' +
         '<p class="jp-duration mb-5"></p>' +
         '</div>' +
-        '<!--             <div class="jp-progress">' +
-        '<div class="jp-seek-bar" style="width: 100%;">' +
-        '<div class="jp-play-bar" style="overflow: hidden; width: 0%;"></div>' +
-        '<div class="jp-play-bar-cursor"></div>' +
         '</div>' +
-        '</div> -->' +
-        '</div>' +
+        // '</div>' +
         '<div class="jp-controller player-song-actions">' +
         '<div class="jp-controls">' +
         '<a class="jp-control-btn jp-previous" href="javascript:void(0);" title="上一首">' +
@@ -182,12 +178,12 @@
     function initCirclePlayer() {
         var CIRCLE_TEMPLATE = '<div id="cp_container_1" class="cp-container">' +
         '<div class="cp-buffer-holder">' +
-        '<div class="cp-buffer-1"></div>' +
-        '<div class="cp-buffer-2"></div>' +
+        '<div class="cp-buffer-1 player-player-cache"></div>' +
+        '<div class="cp-buffer-2 player-player-cache"></div>' +
         '</div>' +
         '<div class="cp-progress-holder">' +
-        '<div class="cp-progress-1"></div>' +
-        '<div class="cp-progress-2"></div>' +
+        '<div class="cp-progress-1 player-player-progress"></div>' +
+        '<div class="cp-progress-2 player-player-progress"></div>' +
         '</div>' +
         '<div class="cp-circle-control"></div>' + 
         '</div>';
@@ -224,9 +220,15 @@
     }
 
     function updateCurrentSong() {
+        var $cover = $mainContainer.find('.jp-cover');
+
         currentSong = mainPlayer.playlist[mainPlayer.current];
-        $mainContainer.find('.jp-cover').attr('src', 
-            currentSong.cover || options.defaultCoverUrl);
+        if(currentSong.cover) {
+            $cover.attr('src', currentSong.cover).show();
+        } else {
+            // $cover.attr('src', options.defaultCoverUrl);
+            $cover.hide();
+        }
         console.log(currentSong);
     }
 
