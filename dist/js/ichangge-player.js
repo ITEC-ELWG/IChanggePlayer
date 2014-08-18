@@ -3615,6 +3615,761 @@
 })(jQuery);
 
 /*
+ * transform: A jQuery cssHooks adding cross-browser 2d transform capabilities to $.fn.css() and $.fn.animate()
+ *
+ * limitations:
+ * - requires jQuery 1.4.3+
+ * - Should you use the *translate* property, then your elements need to be absolutely positionned in a relatively positionned wrapper **or it will fail in IE678**.
+ * - transformOrigin is not accessible
+ *
+ * latest version and complete README available on Github:
+ * https://github.com/louisremi/jquery.transform.js
+ *
+ * Copyright 2011 @louis_remi
+ * Licensed under the MIT license.
+ *
+ * This saved you an hour of work?
+ * Send me music http://www.amazon.co.uk/wishlist/HNTU0468LQON
+ *
+ */
+(function( $, window, document, Math, undefined ) {
+
+/*
+ * Feature tests and global variables
+ */
+var div = document.createElement("div"),
+	divStyle = div.style,
+	suffix = "Transform",
+	testProperties = [
+		"O" + suffix,
+		"ms" + suffix,
+		"Webkit" + suffix,
+		"Moz" + suffix
+	],
+	i = testProperties.length,
+	supportProperty,
+	supportMatrixFilter,
+	supportFloat32Array = "Float32Array" in window,
+	propertyHook,
+	propertyGet,
+	rMatrix = /Matrix([^)]*)/,
+	rAffine = /^\s*matrix\(\s*1\s*,\s*0\s*,\s*0\s*,\s*1\s*(?:,\s*0(?:px)?\s*){2}\)\s*$/,
+	_transform = "transform",
+	_transformOrigin = "transformOrigin",
+	_translate = "translate",
+	_rotate = "rotate",
+	_scale = "scale",
+	_skew = "skew",
+	_matrix = "matrix";
+
+// test different vendor prefixes of these properties
+while ( i-- ) {
+	if ( testProperties[i] in divStyle ) {
+		$.support[_transform] = supportProperty = testProperties[i];
+		$.support[_transformOrigin] = supportProperty + "Origin";
+		continue;
+	}
+}
+// IE678 alternative
+if ( !supportProperty ) {
+	$.support.matrixFilter = supportMatrixFilter = divStyle.filter === "";
+}
+
+// px isn't the default unit of these properties
+$.cssNumber[_transform] = $.cssNumber[_transformOrigin] = true;
+
+/*
+ * fn.css() hooks
+ */
+if ( supportProperty && supportProperty != _transform ) {
+	// Modern browsers can use jQuery.cssProps as a basic hook
+	$.cssProps[_transform] = supportProperty;
+	$.cssProps[_transformOrigin] = supportProperty + "Origin";
+
+	// Firefox needs a complete hook because it stuffs matrix with "px"
+	if ( supportProperty == "Moz" + suffix ) {
+		propertyHook = {
+			get: function( elem, computed ) {
+				return (computed ?
+					// remove "px" from the computed matrix
+					$.css( elem, supportProperty ).split("px").join(""):
+					elem.style[supportProperty]
+				);
+			},
+			set: function( elem, value ) {
+				// add "px" to matrices
+				elem.style[supportProperty] = /matrix\([^)p]*\)/.test(value) ?
+					value.replace(/matrix((?:[^,]*,){4})([^,]*),([^)]*)/, _matrix+"$1$2px,$3px"):
+					value;
+			}
+		};
+	/* Fix two jQuery bugs still present in 1.5.1
+	 * - rupper is incompatible with IE9, see http://jqbug.com/8346
+	 * - jQuery.css is not really jQuery.cssProps aware, see http://jqbug.com/8402
+	 */
+	} else if ( /^1\.[0-5](?:\.|$)/.test($.fn.jquery) ) {
+		propertyHook = {
+			get: function( elem, computed ) {
+				return (computed ?
+					$.css( elem, supportProperty.replace(/^ms/, "Ms") ):
+					elem.style[supportProperty]
+				);
+			}
+		};
+	}
+	/* TODO: leverage hardware acceleration of 3d transform in Webkit only
+	else if ( supportProperty == "Webkit" + suffix && support3dTransform ) {
+		propertyHook = {
+			set: function( elem, value ) {
+				elem.style[supportProperty] = 
+					value.replace();
+			}
+		}
+	}*/
+
+} else if ( supportMatrixFilter ) {
+	propertyHook = {
+		get: function( elem, computed, asArray ) {
+			var elemStyle = ( computed && elem.currentStyle ? elem.currentStyle : elem.style ),
+				matrix, data;
+
+			if ( elemStyle && rMatrix.test( elemStyle.filter ) ) {
+				matrix = RegExp.$1.split(",");
+				matrix = [
+					matrix[0].split("=")[1],
+					matrix[2].split("=")[1],
+					matrix[1].split("=")[1],
+					matrix[3].split("=")[1]
+				];
+			} else {
+				matrix = [1,0,0,1];
+			}
+
+			if ( ! $.cssHooks[_transformOrigin] ) {
+				matrix[4] = elemStyle ? parseInt(elemStyle.left, 10) || 0 : 0;
+				matrix[5] = elemStyle ? parseInt(elemStyle.top, 10) || 0 : 0;
+
+			} else {
+				data = $._data( elem, "transformTranslate", undefined );
+				matrix[4] = data ? data[0] : 0;
+				matrix[5] = data ? data[1] : 0;
+			}
+
+			return asArray ? matrix : _matrix+"(" + matrix + ")";
+		},
+		set: function( elem, value, animate ) {
+			var elemStyle = elem.style,
+				currentStyle,
+				Matrix,
+				filter,
+				centerOrigin;
+
+			if ( !animate ) {
+				elemStyle.zoom = 1;
+			}
+
+			value = matrix(value);
+
+			// rotate, scale and skew
+			Matrix = [
+				"Matrix("+
+					"M11="+value[0],
+					"M12="+value[2],
+					"M21="+value[1],
+					"M22="+value[3],
+					"SizingMethod='auto expand'"
+			].join();
+			filter = ( currentStyle = elem.currentStyle ) && currentStyle.filter || elemStyle.filter || "";
+
+			elemStyle.filter = rMatrix.test(filter) ?
+				filter.replace(rMatrix, Matrix) :
+				filter + " progid:DXImageTransform.Microsoft." + Matrix + ")";
+
+			if ( ! $.cssHooks[_transformOrigin] ) {
+
+				// center the transform origin, from pbakaus's Transformie http://github.com/pbakaus/transformie
+				if ( (centerOrigin = $.transform.centerOrigin) ) {
+					elemStyle[centerOrigin == "margin" ? "marginLeft" : "left"] = -(elem.offsetWidth/2) + (elem.clientWidth/2) + "px";
+					elemStyle[centerOrigin == "margin" ? "marginTop" : "top"] = -(elem.offsetHeight/2) + (elem.clientHeight/2) + "px";
+				}
+
+				// translate
+				// We assume that the elements are absolute positionned inside a relative positionned wrapper
+				elemStyle.left = value[4] + "px";
+				elemStyle.top = value[5] + "px";
+
+			} else {
+				$.cssHooks[_transformOrigin].set( elem, value );
+			}
+		}
+	};
+}
+// populate jQuery.cssHooks with the appropriate hook if necessary
+if ( propertyHook ) {
+	$.cssHooks[_transform] = propertyHook;
+}
+// we need a unique setter for the animation logic
+propertyGet = propertyHook && propertyHook.get || $.css;
+
+/*
+ * fn.animate() hooks
+ */
+$.fx.step.transform = function( fx ) {
+	var elem = fx.elem,
+		start = fx.start,
+		end = fx.end,
+		pos = fx.pos,
+		transform = "",
+		precision = 1E5,
+		i, startVal, endVal, unit;
+
+	// fx.end and fx.start need to be converted to interpolation lists
+	if ( !start || typeof start === "string" ) {
+
+		// the following block can be commented out with jQuery 1.5.1+, see #7912
+		if ( !start ) {
+			start = propertyGet( elem, supportProperty );
+		}
+
+		// force layout only once per animation
+		if ( supportMatrixFilter ) {
+			elem.style.zoom = 1;
+		}
+
+		// replace "+=" in relative animations (-= is meaningless with transforms)
+		end = end.split("+=").join(start);
+
+		// parse both transform to generate interpolation list of same length
+		$.extend( fx, interpolationList( start, end ) );
+		start = fx.start;
+		end = fx.end;
+	}
+
+	i = start.length;
+
+	// interpolate functions of the list one by one
+	while ( i-- ) {
+		startVal = start[i];
+		endVal = end[i];
+		unit = +false;
+
+		switch ( startVal[0] ) {
+
+			case _translate:
+				unit = "px";
+			case _scale:
+				unit || ( unit = "");
+
+				transform = startVal[0] + "(" +
+					Math.round( (startVal[1][0] + (endVal[1][0] - startVal[1][0]) * pos) * precision ) / precision + unit +","+
+					Math.round( (startVal[1][1] + (endVal[1][1] - startVal[1][1]) * pos) * precision ) / precision + unit + ")"+
+					transform;
+				break;
+
+			case _skew + "X":
+			case _skew + "Y":
+			case _rotate:
+				transform = startVal[0] + "(" +
+					Math.round( (startVal[1] + (endVal[1] - startVal[1]) * pos) * precision ) / precision +"rad)"+
+					transform;
+				break;
+		}
+	}
+
+	fx.origin && ( transform = fx.origin + transform );
+
+	propertyHook && propertyHook.set ?
+		propertyHook.set( elem, transform, +true ):
+		elem.style[supportProperty] = transform;
+};
+
+/*
+ * Utility functions
+ */
+
+// turns a transform string into its "matrix(A,B,C,D,X,Y)" form (as an array, though)
+function matrix( transform ) {
+	transform = transform.split(")");
+	var
+			trim = $.trim
+		, i = -1
+		// last element of the array is an empty string, get rid of it
+		, l = transform.length -1
+		, split, prop, val
+		, prev = supportFloat32Array ? new Float32Array(6) : []
+		, curr = supportFloat32Array ? new Float32Array(6) : []
+		, rslt = supportFloat32Array ? new Float32Array(6) : [1,0,0,1,0,0]
+		;
+
+	prev[0] = prev[3] = rslt[0] = rslt[3] = 1;
+	prev[1] = prev[2] = prev[4] = prev[5] = 0;
+
+	// Loop through the transform properties, parse and multiply them
+	while ( ++i < l ) {
+		split = transform[i].split("(");
+		prop = trim(split[0]);
+		val = split[1];
+		curr[0] = curr[3] = 1;
+		curr[1] = curr[2] = curr[4] = curr[5] = 0;
+
+		switch (prop) {
+			case _translate+"X":
+				curr[4] = parseInt(val, 10);
+				break;
+
+			case _translate+"Y":
+				curr[5] = parseInt(val, 10);
+				break;
+
+			case _translate:
+				val = val.split(",");
+				curr[4] = parseInt(val[0], 10);
+				curr[5] = parseInt(val[1] || 0, 10);
+				break;
+
+			case _rotate:
+				val = toRadian(val);
+				curr[0] = Math.cos(val);
+				curr[1] = Math.sin(val);
+				curr[2] = -Math.sin(val);
+				curr[3] = Math.cos(val);
+				break;
+
+			case _scale+"X":
+				curr[0] = +val;
+				break;
+
+			case _scale+"Y":
+				curr[3] = val;
+				break;
+
+			case _scale:
+				val = val.split(",");
+				curr[0] = val[0];
+				curr[3] = val.length>1 ? val[1] : val[0];
+				break;
+
+			case _skew+"X":
+				curr[2] = Math.tan(toRadian(val));
+				break;
+
+			case _skew+"Y":
+				curr[1] = Math.tan(toRadian(val));
+				break;
+
+			case _matrix:
+				val = val.split(",");
+				curr[0] = val[0];
+				curr[1] = val[1];
+				curr[2] = val[2];
+				curr[3] = val[3];
+				curr[4] = parseInt(val[4], 10);
+				curr[5] = parseInt(val[5], 10);
+				break;
+		}
+
+		// Matrix product (array in column-major order)
+		rslt[0] = prev[0] * curr[0] + prev[2] * curr[1];
+		rslt[1] = prev[1] * curr[0] + prev[3] * curr[1];
+		rslt[2] = prev[0] * curr[2] + prev[2] * curr[3];
+		rslt[3] = prev[1] * curr[2] + prev[3] * curr[3];
+		rslt[4] = prev[0] * curr[4] + prev[2] * curr[5] + prev[4];
+		rslt[5] = prev[1] * curr[4] + prev[3] * curr[5] + prev[5];
+
+		prev = [rslt[0],rslt[1],rslt[2],rslt[3],rslt[4],rslt[5]];
+	}
+	return rslt;
+}
+
+// turns a matrix into its rotate, scale and skew components
+// algorithm from http://hg.mozilla.org/mozilla-central/file/7cb3e9795d04/layout/style/nsStyleAnimation.cpp
+function unmatrix(matrix) {
+	var
+			scaleX
+		, scaleY
+		, skew
+		, A = matrix[0]
+		, B = matrix[1]
+		, C = matrix[2]
+		, D = matrix[3]
+		;
+
+	// Make sure matrix is not singular
+	if ( A * D - B * C ) {
+		// step (3)
+		scaleX = Math.sqrt( A * A + B * B );
+		A /= scaleX;
+		B /= scaleX;
+		// step (4)
+		skew = A * C + B * D;
+		C -= A * skew;
+		D -= B * skew;
+		// step (5)
+		scaleY = Math.sqrt( C * C + D * D );
+		C /= scaleY;
+		D /= scaleY;
+		skew /= scaleY;
+		// step (6)
+		if ( A * D < B * C ) {
+			A = -A;
+			B = -B;
+			skew = -skew;
+			scaleX = -scaleX;
+		}
+
+	// matrix is singular and cannot be interpolated
+	} else {
+		// In this case the elem shouldn't be rendered, hence scale == 0
+		scaleX = scaleY = skew = 0;
+	}
+
+	// The recomposition order is very important
+	// see http://hg.mozilla.org/mozilla-central/file/7cb3e9795d04/layout/style/nsStyleAnimation.cpp#l971
+	return [
+		[_translate, [+matrix[4], +matrix[5]]],
+		[_rotate, Math.atan2(B, A)],
+		[_skew + "X", Math.atan(skew)],
+		[_scale, [scaleX, scaleY]]
+	];
+}
+
+// build the list of transform functions to interpolate
+// use the algorithm described at http://dev.w3.org/csswg/css3-2d-transforms/#animation
+function interpolationList( start, end ) {
+	var list = {
+			start: [],
+			end: []
+		},
+		i = -1, l,
+		currStart, currEnd, currType;
+
+	// get rid of affine transform matrix
+	( start == "none" || isAffine( start ) ) && ( start = "" );
+	( end == "none" || isAffine( end ) ) && ( end = "" );
+
+	// if end starts with the current computed style, this is a relative animation
+	// store computed style as the origin, remove it from start and end
+	if ( start && end && !end.indexOf("matrix") && toArray( start ).join() == toArray( end.split(")")[0] ).join() ) {
+		list.origin = start;
+		start = "";
+		end = end.slice( end.indexOf(")") +1 );
+	}
+
+	if ( !start && !end ) { return; }
+
+	// start or end are affine, or list of transform functions are identical
+	// => functions will be interpolated individually
+	if ( !start || !end || functionList(start) == functionList(end) ) {
+
+		start && ( start = start.split(")") ) && ( l = start.length );
+		end && ( end = end.split(")") ) && ( l = end.length );
+
+		while ( ++i < l-1 ) {
+			start[i] && ( currStart = start[i].split("(") );
+			end[i] && ( currEnd = end[i].split("(") );
+			currType = $.trim( ( currStart || currEnd )[0] );
+
+			append( list.start, parseFunction( currType, currStart ? currStart[1] : 0 ) );
+			append( list.end, parseFunction( currType, currEnd ? currEnd[1] : 0 ) );
+		}
+
+	// otherwise, functions will be composed to a single matrix
+	} else {
+		list.start = unmatrix(matrix(start));
+		list.end = unmatrix(matrix(end))
+	}
+
+	return list;
+}
+
+function parseFunction( type, value ) {
+	var
+		// default value is 1 for scale, 0 otherwise
+		defaultValue = +(!type.indexOf(_scale)),
+		scaleX,
+		// remove X/Y from scaleX/Y & translateX/Y, not from skew
+		cat = type.replace( /e[XY]/, "e" );
+
+	switch ( type ) {
+		case _translate+"Y":
+		case _scale+"Y":
+
+			value = [
+				defaultValue,
+				value ?
+					parseFloat( value ):
+					defaultValue
+			];
+			break;
+
+		case _translate+"X":
+		case _translate:
+		case _scale+"X":
+			scaleX = 1;
+		case _scale:
+
+			value = value ?
+				( value = value.split(",") ) &&	[
+					parseFloat( value[0] ),
+					parseFloat( value.length>1 ? value[1] : type == _scale ? scaleX || value[0] : defaultValue+"" )
+				]:
+				[defaultValue, defaultValue];
+			break;
+
+		case _skew+"X":
+		case _skew+"Y":
+		case _rotate:
+			value = value ? toRadian( value ) : 0;
+			break;
+
+		case _matrix:
+			return unmatrix( value ? toArray(value) : [1,0,0,1,0,0] );
+			break;
+	}
+
+	return [[ cat, value ]];
+}
+
+function isAffine( matrix ) {
+	return rAffine.test(matrix);
+}
+
+function functionList( transform ) {
+	return transform.replace(/(?:\([^)]*\))|\s/g, "");
+}
+
+function append( arr1, arr2, value ) {
+	while ( value = arr2.shift() ) {
+		arr1.push( value );
+	}
+}
+
+// converts an angle string in any unit to a radian Float
+function toRadian(value) {
+	return ~value.indexOf("deg") ?
+		parseInt(value,10) * (Math.PI * 2 / 360):
+		~value.indexOf("grad") ?
+			parseInt(value,10) * (Math.PI/200):
+			parseFloat(value);
+}
+
+// Converts "matrix(A,B,C,D,X,Y)" to [A,B,C,D,X,Y]
+function toArray(matrix) {
+	// remove the unit of X and Y for Firefox
+	matrix = /([^,]*),([^,]*),([^,]*),([^,]*),([^,p]*)(?:px)?,([^)p]*)(?:px)?/.exec(matrix);
+	return [matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6]];
+}
+
+$.transform = {
+	centerOrigin: "margin"
+};
+
+})( jQuery, window, document, Math );
+
+/*
+jQuery grab 
+https://github.com/jussi-kalliokoski/jQuery.grab
+Ported from Jin.js::gestures   
+https://github.com/jussi-kalliokoski/jin.js/
+Created by Jussi Kalliokoski
+Licensed under MIT License. 
+
+Includes fix for IE
+*/
+
+
+(function($){
+	var	extend		= $.extend,
+		mousedown	= 'mousedown',
+		mousemove	= 'mousemove',
+		mouseup		= 'mouseup',
+		touchstart	= 'touchstart',
+		touchmove	= 'touchmove',
+		touchend	= 'touchend',
+		touchcancel	= 'touchcancel';
+
+	function unbind(elem, type, func){
+		if (type.substr(0,5) !== 'touch'){ // A temporary fix for IE8 data passing problem in Jin.
+			return $(elem).unbind(type, func);
+		}
+		var fnc, i;
+		for (i=0; i<bind._binds.length; i++){
+			if (bind._binds[i].elem === elem && bind._binds[i].type === type && bind._binds[i].func === func){
+				if (document.addEventListener){
+					elem.removeEventListener(type, bind._binds[i].fnc, false);
+				} else {
+					elem.detachEvent('on'+type, bind._binds[i].fnc);
+				}
+				bind._binds.splice(i--, 1);
+			}
+		}
+	}
+
+	function bind(elem, type, func, pass){
+		if (type.substr(0,5) !== 'touch'){ // A temporary fix for IE8 data passing problem in Jin.
+			return $(elem).bind(type, pass, func);
+		}
+		var fnc, i;
+		if (bind[type]){
+			return bind[type].bind(elem, type, func, pass);
+		}
+		fnc = function(e){
+			if (!e){ // Fix some ie bugs...
+				e = window.event;
+			}
+			if (!e.stopPropagation){
+				e.stopPropagation = function(){ this.cancelBubble = true; };
+			}
+			e.data = pass;
+			func.call(elem, e);
+		};
+		if (document.addEventListener){
+			elem.addEventListener(type, fnc, false);
+		} else {
+			elem.attachEvent('on' + type, fnc);
+		}
+		bind._binds.push({elem: elem, type: type, func: func, fnc: fnc});
+	}
+
+	function grab(elem, options)
+	{
+		var data = {
+			move: {x: 0, y: 0},
+			offset: {x: 0, y: 0},
+			position: {x: 0, y: 0},
+			start: {x: 0, y: 0},
+			affects: document.documentElement,
+			stopPropagation: false,
+			preventDefault: true,
+			touch: true // Implementation unfinished, and doesn't support multitouch
+		};
+		extend(data, options);
+		data.element = elem;
+		bind(elem, mousedown, mouseDown, data);
+		if (data.touch){
+			bind(elem, touchstart, touchStart, data);
+		}
+	}
+	function ungrab(elem){
+		unbind(elem, mousedown, mousedown);
+	}
+	function mouseDown(e){
+		e.data.position.x = e.pageX;
+		e.data.position.y = e.pageY;
+		e.data.start.x = e.pageX;
+		e.data.start.y = e.pageY;
+		e.data.event = e;
+		if (e.data.onstart && e.data.onstart.call(e.data.element, e.data)){
+			return;
+		}
+		if (e.preventDefault && e.data.preventDefault){
+			e.preventDefault();
+		}
+		if (e.stopPropagation && e.data.stopPropagation){
+			e.stopPropagation();
+		}
+		bind(e.data.affects, mousemove, mouseMove, e.data);
+		bind(e.data.affects, mouseup, mouseUp, e.data);
+	}
+	function mouseMove(e){
+		if (e.preventDefault && e.data.preventDefault){
+			e.preventDefault();
+		}
+		if (e.stopPropagation && e.data.preventDefault){
+			e.stopPropagation();
+		}
+		e.data.move.x = e.pageX - e.data.position.x;
+		e.data.move.y = e.pageY - e.data.position.y;
+		e.data.position.x = e.pageX;
+		e.data.position.y = e.pageY;
+		e.data.offset.x = e.pageX - e.data.start.x;
+		e.data.offset.y = e.pageY - e.data.start.y;
+		e.data.event = e;
+		if (e.data.onmove){
+			e.data.onmove.call(e.data.element, e.data);
+		}
+	}
+	function mouseUp(e){
+		if (e.preventDefault && e.data.preventDefault){
+			e.preventDefault();
+		}
+		if (e.stopPropagation && e.data.stopPropagation){
+			e.stopPropagation();
+		}
+		unbind(e.data.affects, mousemove, mouseMove);
+		unbind(e.data.affects, mouseup, mouseUp);
+		e.data.event = e;
+		if (e.data.onfinish){
+			e.data.onfinish.call(e.data.element, e.data);
+		}
+	}
+	function touchStart(e){
+		e.data.position.x = e.touches[0].pageX;
+		e.data.position.y = e.touches[0].pageY;
+		e.data.start.x = e.touches[0].pageX;
+		e.data.start.y = e.touches[0].pageY;
+		e.data.event = e;
+		if (e.data.onstart && e.data.onstart.call(e.data.element, e.data)){
+			return;
+		}
+		if (e.preventDefault && e.data.preventDefault){
+			e.preventDefault();
+		}
+		if (e.stopPropagation && e.data.stopPropagation){
+			e.stopPropagation();
+		}
+		bind(e.data.affects, touchmove, touchMove, e.data);
+		bind(e.data.affects, touchend, touchEnd, e.data);
+	}
+	function touchMove(e){
+		if (e.preventDefault && e.data.preventDefault){
+			e.preventDefault();
+		}
+		if (e.stopPropagation && e.data.stopPropagation){
+			e.stopPropagation();
+		}
+		e.data.move.x = e.touches[0].pageX - e.data.position.x;
+		e.data.move.y = e.touches[0].pageY - e.data.position.y;
+		e.data.position.x = e.touches[0].pageX;
+		e.data.position.y = e.touches[0].pageY;
+		e.data.offset.x = e.touches[0].pageX - e.data.start.x;
+		e.data.offset.y = e.touches[0].pageY - e.data.start.y;
+		e.data.event = e;
+		if (e.data.onmove){
+			e.data.onmove.call(e.data.elem, e.data);
+		}
+	}
+	function touchEnd(e){
+		if (e.preventDefault && e.data.preventDefault){
+			e.preventDefault();
+		}
+		if (e.stopPropagation && e.data.stopPropagation){
+			e.stopPropagation();
+		}
+		unbind(e.data.affects, touchmove, touchMove);
+		unbind(e.data.affects, touchend, touchEnd);
+		e.data.event = e;
+		if (e.data.onfinish){
+			e.data.onfinish.call(e.data.element, e.data);
+		}
+	}
+
+	bind._binds = [];
+
+	$.fn.grab = function(a, b){
+		return this.each(function(){
+			return grab(this, a, b);
+		});
+	};
+	$.fn.ungrab = function(a){
+		return this.each(function(){
+			return ungrab(this, a);
+		});
+	};
+})(jQuery);
+/* Modernizr custom build of 1.7pre: csstransforms */
+window.Modernizr=function(a,b,c){function G(){}function F(a,b){var c=a.charAt(0).toUpperCase()+a.substr(1),d=(a+" "+p.join(c+" ")+c).split(" ");return!!E(d,b)}function E(a,b){for(var d in a)if(k[a[d]]!==c&&(!b||b(a[d],j)))return!0}function D(a,b){return(""+a).indexOf(b)!==-1}function C(a,b){return typeof a===b}function B(a,b){return A(o.join(a+";")+(b||""))}function A(a){k.cssText=a}var d="1.7pre",e={},f=!0,g=b.documentElement,h=b.head||b.getElementsByTagName("head")[0],i="modernizr",j=b.createElement(i),k=j.style,l=b.createElement("input"),m=":)",n=Object.prototype.toString,o=" -webkit- -moz- -o- -ms- -khtml- ".split(" "),p="Webkit Moz O ms Khtml".split(" "),q={svg:"http://www.w3.org/2000/svg"},r={},s={},t={},u=[],v,w=function(a){var c=b.createElement("style"),d=b.createElement("div"),e;c.textContent=a+"{#modernizr{height:3px}}",h.appendChild(c),d.id="modernizr",g.appendChild(d),e=d.offsetHeight===3,c.parentNode.removeChild(c),d.parentNode.removeChild(d);return!!e},x=function(){function d(d,e){e=e||b.createElement(a[d]||"div");var f=(d="on"+d)in e;f||(e.setAttribute||(e=b.createElement("div")),e.setAttribute&&e.removeAttribute&&(e.setAttribute(d,""),f=C(e[d],"function"),C(e[d],c)||(e[d]=c),e.removeAttribute(d))),e=null;return f}var a={select:"input",change:"input",submit:"form",reset:"form",error:"img",load:"img",abort:"img"};return d}(),y=({}).hasOwnProperty,z;C(y,c)||C(y.call,c)?z=function(a,b){return b in a&&C(a.constructor.prototype[b],c)}:z=function(a,b){return y.call(a,b)},r.csstransforms=function(){return!!E(["transformProperty","WebkitTransform","MozTransform","OTransform","msTransform"])};for(var H in r)z(r,H)&&(v=H.toLowerCase(),e[v]=r[H](),u.push((e[v]?"":"no-")+v));e.input||G(),e.crosswindowmessaging=e.postmessage,e.historymanagement=e.history,e.addTest=function(a,b){a=a.toLowerCase();if(!e[a]){b=!!b(),g.className+=" "+(b?"":"no-")+a,e[a]=b;return e}},A(""),j=l=null,e._enableHTML5=f,e._version=d,g.className=g.className.replace(/\bno-js\b/,"")+" js "+u.join(" ");return e}(this,this.document)
+/*
  * 爱唱歌播放器
  * https://github.com/ITEC-ELWG/IChanggePlayer
  *
@@ -3635,7 +4390,7 @@
         solution: 'html, flash',
         swfPath: 'scripts/lib/',
         playList: [],
-        defaultCoverUrl: 'images/player-cover-default.png',
+        defaultCoverUrl: 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D',
         dataAdapter: {
             artist: 'artist',
             title: 'title',
@@ -3647,13 +4402,14 @@
         debug: false
     },
     currentSong,
-    $mainContainer, mainPlayer;
+    $mainContainer, $mockPlayer, mainPlayer;
 
     var init = function(opts) {
         $.extend(options, opts);
 
         createDOM(options.containerId);
         initPlayer(options.playList);
+        initCirclePlayer();
         bindEvents();
     };
 
@@ -3662,10 +4418,11 @@
         '<div id="ichangge-player-mock"></div>' + 
         '<div id="ichangge-player-container" class="jp-audio">' +
         '<div class="container jp-gui jp-image-circular">' +
-        '<div class="song-cover-container jp-image-wrapper jp-image-circular">' +
-        '<img src="images/player-cover-default.png" class="jp-cover jp-image-present">' +
+        '<div class="song-cover-container player-default-cover jp-image-wrapper jp-image-circular">' +
+        '<img src="' + options.defaultCoverUrl + '" alt="" class="jp-cover jp-image-present">' +
         '<div class="song-cover-shade player-cover-shade"></div>' +
         '</div>' +
+        // '<div class="player-song-board">' +
         '<div class="player-song-interactions">' +
         '<i class="jp-icon player-icon-share mr-5"></i>' +
         '<i class="jp-icon player-icon-like mr-5"></i>' +
@@ -3677,13 +4434,8 @@
         '<p class="jp-artist mb-5"></p>' +
         '<p class="jp-duration mb-5"></p>' +
         '</div>' +
-        '<!--             <div class="jp-progress">' +
-        '<div class="jp-seek-bar" style="width: 100%;">' +
-        '<div class="jp-play-bar" style="overflow: hidden; width: 0%;"></div>' +
-        '<div class="jp-play-bar-cursor"></div>' +
         '</div>' +
-        '</div> -->' +
-        '</div>' +
+        // '</div>' +
         '<div class="jp-controller player-song-actions">' +
         '<div class="jp-controls">' +
         '<a class="jp-control-btn jp-previous" href="javascript:void(0);" title="上一首">' +
@@ -3718,6 +4470,7 @@
         $mainContainer.append($(PLAYER_TEMPLATE));
         // 原先的$mainContainer是总容器，后面需要修正为包含DOM的容器
         $mainContainer = $('#ichangge-player-container');
+        $mockPlayer = $('#ichangge-player-mock');
 
         if(!options.hasExtraControls) {
             $mainContainer.find('.player-song-interactions').remove();
@@ -3764,15 +4517,13 @@
             },
             canplay: function(e) {
                 log('canplay');
-                fixLoadingButton(true);
+                fixLoadingButton(false);
             },
             play: function(e) {
                 log('play');
-                fixLoadingButton(false);
             },
             pause: function(e) {
                 log('pause');
-                fixLoadingButton(true);
             },
             durationchange: function(e) {
                 log('duration change');
@@ -3780,24 +4531,44 @@
         });
     }
 
-    function selectSong(index, canPlay) {
+    var selectSong = function(index, immediately) {
         if (index === 'next') {
             mainPlayer.next();
         } else if (index === 'previous') {
             mainPlayer.previous();
         } else {
-            if (canPlay) {
+            if (immediately) {
                 mainPlayer.play(index);
             } else {
                 mainPlayer.select(index);
             }
         }
         updateCurrentSong();
+    };
+
+    function initCirclePlayer() {
+        var CIRCLE_TEMPLATE = '<div id="cp_container_1" class="cp-container">' +
+        '<div class="cp-buffer-holder">' +
+        '<div class="cp-buffer-1 player-player-cache"></div>' +
+        '<div class="cp-buffer-2 player-player-cache"></div>' +
+        '</div>' +
+        '<div class="cp-progress-holder">' +
+        '<div class="cp-progress-1 player-player-progress"></div>' +
+        '<div class="cp-progress-2 player-player-progress"></div>' +
+        '</div>' +
+        '<div class="cp-circle-control"></div>' + 
+        '</div>';
+
+        $('#ichangge-player-container').append($(CIRCLE_TEMPLATE));
+
+        var circlePlayer = new CirclePlayer('#ichangge-player-mock', {
+            cssSelectorAncestor: '#cp_container_1'
+        });
     }
 
     function bindEvents() {
-        $mainContainer.find('.jp-next, .jp-previous').on('click', function() {
-            updateCurrentSong();
+        $mockPlayer.on($.jPlayer.event.setmedia, function(e) {
+           updateCurrentSong();
         });
     }
 
@@ -3805,27 +4576,30 @@
         if (navigator.userAgent.match(/iPhone/i) || 
             navigator.userAgent.match(/iPad/i)) {
             console.log('detected iphone');
-            fixLoadingButton(true);
-        } else {
             fixLoadingButton(false);
+        } else {
+            fixLoadingButton(true);
         }
     }
 
-    function fixLoadingButton(canPlay) {
-        if (canPlay) {
-            $mainContainer.find('.player-icon-play').removeClass('fa-spin');
-            $mainContainer.find('.player-icon-pause').removeClass('player-icon-play fa-spin');
-        } else {
+    function fixLoadingButton(isLoading) {
+        if (isLoading) {
             $mainContainer.find('.player-icon-play').addClass('fa-spin');
-            $mainContainer.find('.jp-pause').hide();
-            $mainContainer.find('.jp-play').show();
+        } else {
+            $mainContainer.find('.player-icon-play').removeClass('fa-spin');
         }
     }
 
     function updateCurrentSong() {
+        var $cover = $mainContainer.find('.jp-cover');
+
         currentSong = mainPlayer.playlist[mainPlayer.current];
-        $mainContainer.find('.jp-cover').attr('src', 
-            currentSong.cover || options.defaultCoverUrl);
+        if(currentSong.cover) {
+            $cover.attr('src', currentSong.cover).show();
+        } else {
+            // $cover.attr('src', options.defaultCoverUrl);
+            $cover.hide();
+        }
         console.log(currentSong);
     }
 
@@ -3855,6 +4629,7 @@
 
     window.IChanggePlayer = {
         init: init,
+        select: selectSong,
         getPlayer: function() {
             return mainPlayer;            
         },
