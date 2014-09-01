@@ -27,6 +27,8 @@
                 oga: 'oga',
                 cover: 'cover'
             },
+            startIndex: 0,
+            startImmediately: false,
             hasCloseControl: true,
             hasExtraControls: true,
             debug: false
@@ -110,6 +112,10 @@
 
     function initPlayer(playList) {
         playList = convertDataInterface(playList);
+        if (playList.length === 0) {
+            console.error('The playlist has no audios.');
+            return;
+        }
 
         mainPlayer = new jPlayerPlaylist({
             jPlayer: '#ichangge-player-mock',
@@ -128,7 +134,7 @@
             remainingDuration: true,
             toggleDuration: true,
             ready: function(e) {
-                selectSong(0, false);
+                selectSong(options.startIndex, options.startImmediately);
             },
             loadstart: function(e) {
                 log('Start loading...');
@@ -204,7 +210,7 @@
         });
 
         $btnClose.click(function() {
-            hide();
+            hide(true);
         });
 
         $mainContainer.hover(function() {
@@ -265,10 +271,17 @@
         }
     }
 
+    /**
+     * 显示播放器
+     */
     var show = function() {
         $mainContainer.fadeIn('fast');
     };
 
+    /**
+     * 隐藏播放器
+     * @param  {Boolean} pauseWhenClose 是否在隐藏播放器时暂停播放歌曲
+     */
     var hide = function(pauseWhenClose) {
         if (pauseWhenClose) {
             $mockPlayer.jPlayer('pause');
