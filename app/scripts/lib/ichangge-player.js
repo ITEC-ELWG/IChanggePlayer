@@ -61,8 +61,10 @@
             '</div>' +
             '<div class="jp-details">' +
             '<div class="player-song-info">' +
-            '<p class="jp-title mb-5"></p>' +
-            '<p class="jp-artist mb-5"></p>' +
+            '<div class="scroll-text">' +
+            '<span class="jp-title mb-5"></span></div>' +
+            '<div class="scroll-text">' +
+            '<span class="jp-artist mb-5"></span></div>' +
             '<p class="jp-duration mb-5"></p>' +
             '</div>' +
             '</div>' +
@@ -247,7 +249,33 @@
         } else {
             $cover.hide();
         }
+
+        initScrollText();
         log(currentSong);
+    }
+
+    function initScrollText() {
+        $mainContainer.find('.scroll-text').each(function(i, el) {
+            var $container = $(el),
+                $text = $container.children().first(),
+                cw = $container.width(),
+                tw = $text.width();
+
+            if(tw > cw) {
+                endless($text, cw - tw);
+            }
+        });
+
+        function endless($el, length) {
+            $el.animate({marginLeft: '' + length}, Math.abs(length) * 40, 'linear')
+                .delay(3000)
+                .animate({marginLeft: 0}, Math.abs(length) * 40, 'linear')
+                .delay(3000)
+                .queue(function(next) {
+                    endless($el, length);
+                    next();
+                });
+        }
     }
 
     function convertDataInterface(playList) {
