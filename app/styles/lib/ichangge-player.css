@@ -101,6 +101,7 @@
     width: 150px;
     left: 25px;
     bottom: 40px;
+    padding-top: 60px;  /* 减小进度条的可点区域 */
     text-align: center;
     color: #ffffff;
     z-index: 186;
