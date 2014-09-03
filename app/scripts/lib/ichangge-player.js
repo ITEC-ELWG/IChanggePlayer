@@ -261,16 +261,17 @@
                 cw = $container.width(),
                 tw = $text.width();
 
+            $text.stop(true).css('marginLeft', 0);
             if(tw > cw) {
                 endless($text, cw - tw);
             }
         });
 
         function endless($el, length) {
-            $el.animate({marginLeft: '' + length}, Math.abs(length) * 40, 'linear')
+            $el.delay(3000)
+                .animate({marginLeft: '' + length}, Math.abs(length) * 40, 'linear')
                 .delay(3000)
                 .animate({marginLeft: 0}, Math.abs(length) * 40, 'linear')
-                .delay(3000)
                 .queue(function(next) {
                     endless($el, length);
                     next();
