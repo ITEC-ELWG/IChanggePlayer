@@ -318,6 +318,21 @@
         $mainContainer.fadeOut('fast');
     };
 
+    /**
+     * 添加播放曲目
+     * @param {Array} playList 要添加的播放曲目数组
+     */
+    var add = function(playList) {
+        var i, length;
+
+        if ($.isArray(playList)) {
+            playList = convertDataInterface(playList);
+            for (i = 0, length = playList.length; i < length; i += 1) {
+                mainPlayer.add(playList[i]);
+            }
+        }
+    };
+
     window.IChanggePlayer = {
         init: init,
         select: selectSong,
@@ -331,7 +346,8 @@
             return $mockPlayer;
         },
         show: show,
-        hide: hide
+        hide: hide,
+        add: add
     };
 
 })(jQuery, jPlayerPlaylist);
