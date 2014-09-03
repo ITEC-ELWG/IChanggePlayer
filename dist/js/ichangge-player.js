@@ -4915,6 +4915,8 @@ CirclePlayer.prototype = {
                 oga: 'oga',
                 cover: 'cover'
             },
+            startIndex: 0,
+            startImmediately: false,
             hasCloseControl: true,
             hasExtraControls: true,
             debug: false
@@ -4947,8 +4949,10 @@ CirclePlayer.prototype = {
             '</div>' +
             '<div class="jp-details">' +
             '<div class="player-song-info">' +
-            '<p class="jp-title mb-5"></p>' +
-            '<p class="jp-artist mb-5"></p>' +
+            '<div class="scroll-text">' +
+            '<span class="jp-title mb-5"></span></div>' +
+            '<div class="scroll-text">' +
+            '<span class="jp-artist mb-5"></span></div>' +
             '<p class="jp-duration mb-5"></p>' +
             '</div>' +
             '</div>' +
@@ -4998,6 +5002,10 @@ CirclePlayer.prototype = {
 
     function initPlayer(playList) {
         playList = convertDataInterface(playList);
+        if (playList.length === 0) {
+            console.error('The playlist has no audios.');
+            return;
+        }
 
         mainPlayer = new jPlayerPlaylist({
             jPlayer: '#ichangge-player-mock',
@@ -5016,7 +5024,7 @@ CirclePlayer.prototype = {
             remainingDuration: true,
             toggleDuration: true,
             ready: function(e) {
-                selectSong(0, false);
+                selectSong(options.startIndex, options.startImmediately);
             },
             loadstart: function(e) {
                 log('Start loading...');
@@ -5092,7 +5100,7 @@ CirclePlayer.prototype = {
         });
 
         $btnClose.click(function() {
-            hide();
+            hide(true);
         });
 
         $mainContainer.hover(function() {
@@ -5129,7 +5137,34 @@ CirclePlayer.prototype = {
         } else {
             $cover.hide();
         }
+
+        initScrollText();
         log(currentSong);
+    }
+
+    function initScrollText() {
+        $mainContainer.find('.scroll-text').each(function(i, el) {
+            var $container = $(el),
+                $text = $container.children().first(),
+                cw = $container.width(),
+                tw = $text.width();
+
+            $text.stop(true).css('marginLeft', 0);
+            if(tw > cw) {
+                endless($text, cw - tw);
+            }
+        });
+
+        function endless($el, length) {
+            $el.delay(3000)
+                .animate({marginLeft: '' + length}, Math.abs(length) * 40, 'linear')
+                .delay(3000)
+                .animate({marginLeft: 0}, Math.abs(length) * 40, 'linear')
+                .queue(function(next) {
+                    endless($el, length);
+                    next();
+                });
+        }
     }
 
     function convertDataInterface(playList) {
@@ -5153,10 +5188,17 @@ CirclePlayer.prototype = {
         }
     }
 
+    /**
+     * 显示播放器
+     */
     var show = function() {
         $mainContainer.fadeIn('fast');
     };
 
+    /**
+     * 隐藏播放器
+     * @param  {Boolean} pauseWhenClose 是否在隐藏播放器时暂停播放歌曲
+     */
     var hide = function(pauseWhenClose) {
         if (pauseWhenClose) {
             $mockPlayer.jPlayer('pause');

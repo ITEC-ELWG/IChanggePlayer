@@ -59,7 +59,19 @@
 
 .jp-title {
     font-size: 16px;
+}
 
+.scroll-text {
+    position: relative;
+    width: 150px;
+    height: 20px;
+    overflow: hidden;
+}
+
+.scroll-text span {
+    /*position: absolute;*/
+    margin-left: 0;
+    white-space: nowrap;
 }
 
 /* @end: details */
@@ -89,6 +101,7 @@
     width: 150px;
     left: 25px;
     bottom: 40px;
+    padding-top: 60px;  /* 减小进度条的可点区域 */
     text-align: center;
     color: #ffffff;
     z-index: 186;
