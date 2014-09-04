@@ -4995,6 +4995,9 @@ CirclePlayer.prototype = {
         $mainContainer = $('#ichangge-player-container');
         $mockPlayer = $('#ichangge-player-mock');
 
+        if (!options.hasCloseControl) {
+            $mainContainer.find('.jp-close').remove();
+        }
         if (!options.hasExtraControls) {
             $mainContainer.find('.player-song-interactions').remove();
         }
