@@ -299,7 +299,7 @@
 
     function log(msg) {
         if (options.debug) {
-            console.debug(msg);
+            console.log(msg);
         }
     }
 
