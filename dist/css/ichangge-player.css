@@ -53,6 +53,10 @@
     margin-right: 5px;
 }
 
+.mr-10 {
+    margin-right: 10px;
+}
+
 /* @end: base */
 
 /* @group: details */
@@ -92,8 +96,8 @@
 }
 .player-song-interactions {
     position: absolute;
-    top: 25px;
-    left: 75px;
+    top: 30px;
+    left: 72px;
     z-index: 186;
 }
 .player-song-info {

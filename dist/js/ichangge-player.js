@@ -20,20 +20,7 @@
  * Search terms: "jQuery Switch" and "Zepto Switch"
  */
 
-(function (root, factory) {
-	if (typeof define === 'function' && define.amd) {
-		// AMD. Register as an anonymous module.
-		define(['jquery'], factory); // jQuery Switch
-		// define(['zepto'], factory); // Zepto Switch
-	} else {
-		// Browser globals
-		if(root.jQuery) { // Use jQuery if available
-			factory(root.jQuery);
-		} else { // Otherwise, use Zepto
-			factory(root.Zepto);
-		}
-	}
-}(this, function ($, undefined) {
+(function ($, undefined) {
 
 	// Adapted from jquery.ui.widget.js (1.8.7): $.widget.bridge - Tweaked $.data(this,XYZ) to $(this).data(XYZ) for Zepto
 	$.fn.jPlayer = function( options ) {
@@ -678,7 +665,7 @@
 			playbackRate: 1, // Warning - Now both an option and a status property
 			ended: 0
 
-/*		Persistant status properties created dynamically at _init():
+    /*		Persistant status properties created dynamically at _init():
 			width
 			height
 			cssClass
@@ -686,7 +673,7 @@
 			noFullWindow
 			noVolume
 			playbackRateEnabled // Warning - Technically, we can have both Flash and HTML, so this might not be correct if the Flash is active. That is a niche case.
-*/
+    */
 		},
 
 		internal: { // Instanced in _init()
@@ -3140,7 +3127,7 @@
 		CSS_SELECTOR_STRING: "Check your css selector is a string.",
 		OPTION_KEY: "Check your option name."
 	};
-}));
+})(jQuery);
 
 /*
  * Playlist Object for the jPlayer Plugin
@@ -5155,8 +5142,8 @@ CirclePlayer.prototype = {
             '<div class="song-cover-shade player-cover-shade"></div>' +
             '</div>' +
             '<div class="player-song-interactions">' +
-            '<i class="jp-icon player-icon-like mr-5"></i>' +
-            '<i class="jp-icon player-icon-share mr-5"></i>' +
+            '<i class="jp-icon player-icon-like mr-10"></i>' +
+            '<i class="jp-icon player-icon-share"></i>' +
             '</div>' +
             '<div class="jp-details">' +
             '<div class="player-song-info">' +
