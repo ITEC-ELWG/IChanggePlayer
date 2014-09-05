@@ -2753,7 +2753,7 @@
 			}
 
 			// Order of these commands is important for Safari (Win) and IE9. Pause then change currentTime.
-			media.pause();
+			media.pause(true);
 
 			// Setup the Android Fix.
 			if(this.androidFix.setMedia) {
@@ -4931,6 +4931,7 @@ CirclePlayer.prototype = {
         initPlayer(options.playList);
         initCirclePlayer();
         bindEvents();
+        mixinAudioPause();
     };
 
     function createDOM(containerId) {
@@ -4943,9 +4944,8 @@ CirclePlayer.prototype = {
             '<div class="song-cover-shade player-cover-shade"></div>' +
             '</div>' +
             '<div class="player-song-interactions">' +
-            '<i class="jp-icon player-icon-share mr-5"></i>' +
             '<i class="jp-icon player-icon-like mr-5"></i>' +
-            '<i class="jp-icon player-icon-locate"></i>' +
+            '<i class="jp-icon player-icon-share mr-5"></i>' +
             '</div>' +
             '<div class="jp-details">' +
             '<div class="player-song-info">' +
@@ -5051,6 +5051,7 @@ CirclePlayer.prototype = {
             },
             play: function(e) {
                 log('play');
+                $mockPlayer.jPlayerFade().in(1000);
             },
             pause: function(e) {
                 log('pause');
@@ -5111,6 +5112,27 @@ CirclePlayer.prototype = {
         }, function() {
             $btnClose.stop(true).fadeOut('fast');
         });
+    }
+
+    /**
+     * 通过混入重写原生Audio元素的pause方法，引入声音渐隐效果
+     */
+    function mixinAudioPause() {
+        (function() {
+            var audio = $('audio')[0]
+                originalPause = audio.pause;
+
+            // 引入参数fadeIn，只有显示指定为true时才产生声音渐隐效果，否则直接调用原生方法
+            audio.pause = function(fadeIn) {
+                if (fadeIn) {
+                    $mockPlayer.jPlayerFade().out(800, null, null, function() {
+                        originalPause.call(audio);
+                    });
+                } else {
+                    originalPause.call(audio);
+                }
+            };
+        })();
     }
 
     function fixIPhonePlayButton() {
@@ -5187,7 +5209,7 @@ CirclePlayer.prototype = {
 
     function log(msg) {
         if (options.debug) {
-            console.debug(msg);
+            console.log(msg);
         }
     }
 
