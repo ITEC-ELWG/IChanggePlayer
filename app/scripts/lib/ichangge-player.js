@@ -43,6 +43,7 @@
         initPlayer(options.playList);
         initCirclePlayer();
         bindEvents();
+        mixinAudioPause();
     };
 
     function createDOM(containerId) {
@@ -163,6 +164,7 @@
             },
             play: function(e) {
                 log('play');
+                $mockPlayer.jPlayerFade().in(1000);
             },
             pause: function(e) {
                 log('pause');
@@ -223,6 +225,27 @@
         }, function() {
             $btnClose.stop(true).fadeOut('fast');
         });
+    }
+
+    /**
+     * 通过混入重写原生Audio元素的pause方法，引入声音渐隐效果
+     */
+    function mixinAudioPause() {
+        (function() {
+            var audio = $('audio')[0]
+                originalPause = audio.pause;
+
+            // 引入参数fadeIn，只有显示指定为true时才产生声音渐隐效果，否则直接调用原生方法
+            audio.pause = function(fadeIn) {
+                if (fadeIn) {
+                    $mockPlayer.jPlayerFade().out(800, null, null, function() {
+                        originalPause.call(audio);
+                    });
+                } else {
+                    originalPause.call(audio);
+                }
+            };
+        })();
     }
 
     function fixIPhonePlayButton() {
