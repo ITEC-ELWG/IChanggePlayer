@@ -2,7 +2,7 @@
  * z-index list
  *
  * .player-song-actions: 188
- * .player-song-interactions: 186
+ * .player-song-interactions: 187
  * .player-song-info: 186
  * .jp-control-btn: 184;
  * .cp-circle-control: 180
@@ -98,7 +98,7 @@
     position: absolute;
     top: 30px;
     left: 72px;
-    z-index: 186;
+    z-index: 187;
 }
 .player-song-info {
     position: absolute;

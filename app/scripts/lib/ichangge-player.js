@@ -55,8 +55,8 @@
             '<div class="song-cover-shade player-cover-shade"></div>' +
             '</div>' +
             '<div class="player-song-interactions">' +
-            '<i class="jp-icon player-icon-like mr-10"></i>' +
-            '<i class="jp-icon player-icon-share"></i>' +
+            '<a href="javascript:void(0);" class="jp-like mr-10"><i class="jp-icon player-icon-like"></i></a>' +
+            '<a href="javascript:void(0);" class="jp-share mr-10"><i class="jp-icon player-icon-share"></i></a>' +
             '</div>' +
             '<div class="jp-details">' +
             '<div class="player-song-info">' +
