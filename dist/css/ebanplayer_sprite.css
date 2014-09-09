@@ -1,0 +1,88 @@
+#ichangge-player-container .container {
+  background-color: #F9C323;
+}
+
+.player-cover-shade {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: 0px -202px;
+  width: 180px;
+  height: 180px;
+}
+.player-default-cover {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: -182px -202px;
+  width: 180px;
+  height: 180px;
+}
+.player-icon-close:hover,.player-icon-close.active {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: -364px -202px;
+  width: 32px;
+  height: 32px;
+}
+.player-icon-close {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: -404px -276px;
+  width: 32px;
+  height: 32px;
+}
+.player-icon-next:hover,.player-icon-next.active {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: -404px -208px;
+  width: 32px;
+  height: 32px;
+}
+.player-icon-next {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: -404px -242px;
+  width: 32px;
+  height: 32px;
+}
+.player-icon-pause:hover,.player-icon-pause.active {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: -404px 0px;
+  width: 50px;
+  height: 50px;
+}
+.player-icon-pause {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: -404px -156px;
+  width: 50px;
+  height: 50px;
+}
+.player-icon-play:hover,.player-icon-play.active, .song-wrapper:hover .player-icon-play, .song-wrapper.active .player-icon-play {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: -404px -52px;
+  width: 50px;
+  height: 50px;
+}
+.player-icon-play {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: -404px -104px;
+  width: 50px;
+  height: 50px;
+}
+.player-icon-prev:hover,.player-icon-prev.active {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: -404px -310px;
+  width: 32px;
+  height: 32px;
+}
+.player-icon-prev {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: -404px -344px;
+  width: 32px;
+  height: 32px;
+}
+.player-player-cache {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: -202px 0px;
+  width: 200px;
+  height: 200px;
+}
+.player-player-progress {
+  background-image: url(../../images/ebanplayer_sprite.png);
+  background-position: 0px 0px;
+  width: 200px;
+  height: 200px;
+}

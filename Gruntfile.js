@@ -59,7 +59,7 @@ module.exports = function(grunt) {
             css: {
                 expand: true,
                 cwd: '<%= config.app %>/styles/lib/',
-                src: 'ichangge-player.css',
+                src: ['ichangge-player.css', 'ebanplayer_sprite.css'],
                 dest: '<%= config.dist %>/css/'
             },
             img: {
