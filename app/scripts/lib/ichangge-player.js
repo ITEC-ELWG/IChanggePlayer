@@ -51,7 +51,7 @@
             '<div id="ichangge-player-container" class="jp-audio">' +
             '<div class="container jp-gui jp-image-circular">' +
             '<div class="song-cover-container player-default-cover jp-image-wrapper jp-image-circular">' +
-            '<img src="' + options.defaultCoverUrl + '" alt="" class="jp-cover jp-image-present">' +
+            '<img src="' + options.defaultCoverUrl + '" alt="" class="jp-cover jp-image-present jp-image-circular">' +
             '<div class="song-cover-shade player-cover-shade"></div>' +
             '</div>' +
             '<div class="player-song-interactions">' +
@@ -223,6 +223,29 @@
             $btnClose.stop(true).fadeIn('fast');
         }, function() {
             $btnClose.stop(true).fadeOut('fast');
+        });
+
+        enableDrag();
+    }
+
+    function enableDrag() {
+        var $draggingObj = null, rel;
+
+        $(document.body).on('mousedown', '#ichangge-player-container', function(e) {
+            $draggingObj = $(this);
+            rel = {
+                left: e.pageX - $draggingObj.offset().left,
+                top: e.pageY - $draggingObj.offset().top
+            };
+        }).on('mousemove', function(e) {
+            if ($draggingObj) {
+                $draggingObj.offset({
+                    left: e.pageX - rel.left,
+                    top: e.pageY - rel.top
+                });
+            }
+        }).on('mouseup', function(e) {
+            $draggingObj = null;
         });
     }
 

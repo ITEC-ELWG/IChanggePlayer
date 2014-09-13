@@ -15,6 +15,14 @@
     position: fixed;
     top: 50%;
     left: 5%;
+
+    /* disable text selection */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 #ichangge-player-container i {
     cursor: pointer;
