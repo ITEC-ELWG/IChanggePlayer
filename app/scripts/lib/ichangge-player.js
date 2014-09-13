@@ -28,6 +28,7 @@
                 cover: 'cover'
             },
             startIndex: 0,
+            draggable: true,
             startImmediately: false,
             hasCloseControl: true,
             hasExtraControls: true,
@@ -225,7 +226,9 @@
             $btnClose.stop(true).fadeOut('fast');
         });
 
-        enableDrag();
+        if (options.draggable) {
+            enableDrag();
+        }
     }
 
     function enableDrag() {
