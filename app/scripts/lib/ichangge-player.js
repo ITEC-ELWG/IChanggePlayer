@@ -34,7 +34,7 @@
             hasExtraControls: true,
             debug: false
         },
-        currentSong,
+        currentSong, loadingTimer,
         $mainContainer, $mockPlayer, mainPlayer;
 
     var init = function(opts) {
@@ -146,10 +146,11 @@
                 log('Start loading...');
                 fixIPhonePlayButton();
                 resetErrorHint();
+                setLoadingTimeout();
             },
             error: function(e) {
                 log(e.jPlayer.error);
-                showErrorHint();
+                handlePlayerError('error');
             },
             loadeddata: function(event) {
                 log('loadeddata');
@@ -163,6 +164,7 @@
             canplay: function(e) {
                 log('canplay');
                 fixLoadingButton(false);
+                clearTimeout(loadingTimer);
             },
             play: function(e) {
                 log('play');
@@ -233,6 +235,9 @@
         }
     }
 
+    /**
+     * 打开播放器拖拽移动功能
+     */
     function enableDrag() {
         var $draggingObj = null, rel;
 
@@ -355,19 +360,44 @@
         return cleanPlayList;
     }
 
-    function showErrorHint() {
-        $mainContainer.find('.jp-artist').html('即将播放下一首歌');
-        $mainContainer.find('.jp-title').html('出错啦 ←_←');
+    /**
+     * 处理播放器出错
+     */
+    function handlePlayerError(type) {
+        if (type === 'error') {
+            $mainContainer.find('.jp-title').html('出错啦 ←_←');
+            $mainContainer.find('.jp-artist').html(
+                mainPlayer.original.length > 1 ? '即将播放下一首歌' : '请换个地方听歌吧');
+            // 3秒后自动切歌
+            setTimeout(function() {
+                if (mainPlayer.original.length > 1) {
+                    mainPlayer.next();
+                }
+            }, 5000);
+        } else if (type === 'loading') {
+            $mainContainer.find('.jp-title').html('歌曲加载有点小问题');
+            $mainContainer.find('.jp-artist').html('请刷新重试 (╯‵□′)╯︵┻━┻');
+        }
         $mainContainer.find('.jp-duration').addClass('jp-hidden');
         $mainContainer.find('.song-cover-shade').addClass('error-cover');
-        setTimeout(function() {
-            mainPlayer.next();
-        }, 3000);
     }
 
+    /**
+     * 重置播放器错误提示
+     */
     function resetErrorHint() {
         $mainContainer.find('.jp-duration').removeClass('jp-hidden');
         $mainContainer.find('.song-cover-shade').removeClass('error-cover');
+    }
+
+    /**
+     * 设置加载超时
+     */
+    function setLoadingTimeout() {
+        clearTimeout(loadingTimer);
+        loadingTimer = setTimeout(function() {
+            handlePlayerError('loading');
+        }, 10000);
     }
 
     function log(msg) {
