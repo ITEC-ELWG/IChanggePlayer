@@ -145,9 +145,11 @@
             loadstart: function(e) {
                 log('Start loading...');
                 fixIPhonePlayButton();
+                resetErrorHint();
             },
             error: function(e) {
                 log(e.jPlayer.error);
+                showErrorHint();
             },
             loadeddata: function(event) {
                 log('loadeddata');
@@ -351,6 +353,21 @@
             cleanPlayList.push(item);
         }
         return cleanPlayList;
+    }
+
+    function showErrorHint() {
+        $mainContainer.find('.jp-artist').html('即将播放下一首歌');
+        $mainContainer.find('.jp-title').html('出错啦 ←_←');
+        $mainContainer.find('.jp-duration').addClass('jp-hidden');
+        $mainContainer.find('.song-cover-shade').addClass('error-cover');
+        setTimeout(function() {
+            mainPlayer.next();
+        }, 3000);
+    }
+
+    function resetErrorHint() {
+        $mainContainer.find('.jp-duration').removeClass('jp-hidden');
+        $mainContainer.find('.song-cover-shade').removeClass('error-cover');
     }
 
     function log(msg) {

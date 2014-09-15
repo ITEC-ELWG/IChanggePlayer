@@ -53,6 +53,14 @@
     min-height: 180px;
 }
 
+.jp-hidden {
+    visibility: hidden;
+}
+
+.error-cover {
+    background-color:rgba(40, 66, 92, 0.75);
+}
+
 .mb-5 {
     margin-bottom: 5px;
 }
