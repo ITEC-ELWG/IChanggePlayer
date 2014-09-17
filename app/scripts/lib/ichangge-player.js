@@ -16,7 +16,7 @@
     var options = {
             containerId: 'ichangge-player',
             format: 'mp3, oga',
-            solution: 'html, flash',
+            solution: 'flash, html',
             swfPath: 'scripts/lib/',
             playList: [],
             defaultCoverUrl: 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D',

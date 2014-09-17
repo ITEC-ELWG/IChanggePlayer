@@ -5102,7 +5102,7 @@ CirclePlayer.prototype = {
     var options = {
             containerId: 'ichangge-player',
             format: 'mp3, oga',
-            solution: 'html, flash',
+            solution: 'flash, html',
             swfPath: 'scripts/lib/',
             playList: [],
             defaultCoverUrl: 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D',
@@ -5120,7 +5120,7 @@ CirclePlayer.prototype = {
             hasExtraControls: true,
             debug: false
         },
-        currentSong,
+        currentSong, loadingTimer,
         $mainContainer, $mockPlayer, mainPlayer;
 
     var init = function(opts) {
@@ -5231,9 +5231,12 @@ CirclePlayer.prototype = {
             loadstart: function(e) {
                 log('Start loading...');
                 fixIPhonePlayButton();
+                resetErrorHint();
+                setLoadingTimeout();
             },
             error: function(e) {
                 log(e.jPlayer.error);
+                handlePlayerError('error');
             },
             loadeddata: function(event) {
                 log('loadeddata');
@@ -5247,6 +5250,7 @@ CirclePlayer.prototype = {
             canplay: function(e) {
                 log('canplay');
                 fixLoadingButton(false);
+                clearTimeout(loadingTimer);
             },
             play: function(e) {
                 log('play');
@@ -5317,6 +5321,9 @@ CirclePlayer.prototype = {
         }
     }
 
+    /**
+     * 打开播放器拖拽移动功能
+     */
     function enableDrag() {
         var $draggingObj = null, rel;
 
@@ -5437,6 +5444,46 @@ CirclePlayer.prototype = {
             cleanPlayList.push(item);
         }
         return cleanPlayList;
+    }
+
+    /**
+     * 处理播放器出错
+     */
+    function handlePlayerError(type) {
+        if (type === 'error') {
+            $mainContainer.find('.jp-title').html('出错啦 ←_←');
+            $mainContainer.find('.jp-artist').html(
+                mainPlayer.original.length > 1 ? '即将播放下一首歌' : '请换个地方听歌吧');
+            // 3秒后自动切歌
+            setTimeout(function() {
+                if (mainPlayer.original.length > 1) {
+                    mainPlayer.next();
+                }
+            }, 5000);
+        } else if (type === 'loading') {
+            $mainContainer.find('.jp-title').html('歌曲加载有点小问题');
+            $mainContainer.find('.jp-artist').html('请刷新重试 (╯‵□′)╯︵┻━┻');
+        }
+        $mainContainer.find('.jp-duration').addClass('jp-hidden');
+        $mainContainer.find('.song-cover-shade').addClass('error-cover');
+    }
+
+    /**
+     * 重置播放器错误提示
+     */
+    function resetErrorHint() {
+        $mainContainer.find('.jp-duration').removeClass('jp-hidden');
+        $mainContainer.find('.song-cover-shade').removeClass('error-cover');
+    }
+
+    /**
+     * 设置加载超时
+     */
+    function setLoadingTimeout() {
+        clearTimeout(loadingTimer);
+        loadingTimer = setTimeout(function() {
+            handlePlayerError('loading');
+        }, 10000);
     }
 
     function log(msg) {
