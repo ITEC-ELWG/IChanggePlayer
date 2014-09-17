@@ -192,10 +192,10 @@
 						to: function (dur, from, to, callback) {
 							return $.jPlayer.fadeTo(t, dur, from, to, callback, debug);
 						},
-						'in': function (dur, from, to, callback) {
+						fadeIn: function (dur, from, to, callback) {
 							return $.jPlayer.fadeIn(t, dur, from, to, callback, debug);
 						},
-						out: function (dur, from, to, callback) {
+						fadeOut: function (dur, from, to, callback) {
 							return $.jPlayer.fadeOut(t, dur, from, to, callback, debug);
 						},
 						isFading: function () {

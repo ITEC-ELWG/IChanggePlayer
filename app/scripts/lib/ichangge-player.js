@@ -29,6 +29,7 @@
             },
             startIndex: 0,
             draggable: true,
+            fadeVolumn: true,
             startImmediately: false,
             hasCloseControl: true,
             hasExtraControls: true,
@@ -140,7 +141,9 @@
             toggleDuration: true,
             ready: function(e) {
                 selectSong(options.startIndex, options.startImmediately);
-                mixinAudioPause();
+                if (options.fadeVolumn) {
+                    mixinAudioPause();
+                }
             },
             loadstart: function(e) {
                 log('Start loading...');
@@ -168,7 +171,9 @@
             },
             play: function(e) {
                 log('play');
-                $mockPlayer.jPlayerFade().in(1000);
+                if (options.fadeVolumn) {
+                    $mockPlayer.jPlayerFade().fadeIn(1000);
+                }
             },
             pause: function(e) {
                 log('pause');
@@ -278,7 +283,7 @@
             // 引入参数fadeIn，只有显示指定为true时才产生声音渐隐效果，否则直接调用原生方法
             function mixin(fadeIn) {
                 if (fadeIn) {
-                    $mockPlayer.jPlayerFade().out(800, null, null, function() {
+                    $mockPlayer.jPlayerFade().fadeOut(800, null, null, function() {
                         originalPause.call(audio);
                     });
                 } else {
