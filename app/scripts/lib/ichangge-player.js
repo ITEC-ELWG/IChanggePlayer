@@ -35,7 +35,7 @@
             hasExtraControls: true,
             debug: false
         },
-        currentSong, loadingTimer,
+        currentSong, loadingTimer, errorTimer,
         $mainContainer, $mockPlayer, mainPlayer;
 
     var init = function(opts) {
@@ -167,7 +167,7 @@
             canplay: function(e) {
                 log('canplay');
                 fixLoadingButton(false);
-                clearTimeout(loadingTimer);
+                clearAllTimeout();
             },
             play: function(e) {
                 log('play');
@@ -373,8 +373,8 @@
             $mainContainer.find('.jp-title').html('出错啦 ←_←');
             $mainContainer.find('.jp-artist').html(
                 mainPlayer.original.length > 1 ? '即将播放下一首歌' : '请换个地方听歌吧');
-            // 3秒后自动切歌
-            setTimeout(function() {
+            // 5秒后自动切歌
+            errorTimer = setTimeout(function() {
                 if (mainPlayer.original.length > 1) {
                     mainPlayer.next();
                 }
@@ -399,10 +399,22 @@
      * 设置加载超时
      */
     function setLoadingTimeout() {
-        clearTimeout(loadingTimer);
+        clearAllTimeout();
         loadingTimer = setTimeout(function() {
             handlePlayerError('loading');
         }, 10000);
+        log('Set loading timer ' + loadingTimer);
+    }
+
+    /**
+     * 清除所有定时器
+     */
+    function clearAllTimeout() {
+        log('Clear loading timer ' + loadingTimer);
+        log('Clear error timer ' + errorTimer);
+        clearTimeout(loadingTimer);
+        clearTimeout(errorTimer);
+        loadingTimer = null;
     }
 
     function log(msg) {
