@@ -5067,10 +5067,10 @@ CirclePlayer.prototype = {
 						to: function (dur, from, to, callback) {
 							return $.jPlayer.fadeTo(t, dur, from, to, callback, debug);
 						},
-						'in': function (dur, from, to, callback) {
+						fadeIn: function (dur, from, to, callback) {
 							return $.jPlayer.fadeIn(t, dur, from, to, callback, debug);
 						},
-						out: function (dur, from, to, callback) {
+						fadeOut: function (dur, from, to, callback) {
 							return $.jPlayer.fadeOut(t, dur, from, to, callback, debug);
 						},
 						isFading: function () {
@@ -5115,12 +5115,13 @@ CirclePlayer.prototype = {
             },
             startIndex: 0,
             draggable: true,
+            fadeVolumn: true,
             startImmediately: false,
             hasCloseControl: true,
             hasExtraControls: true,
             debug: false
         },
-        currentSong, loadingTimer,
+        currentSong, loadingTimer, errorTimer,
         $mainContainer, $mockPlayer, mainPlayer;
 
     var init = function(opts) {
@@ -5226,7 +5227,9 @@ CirclePlayer.prototype = {
             toggleDuration: true,
             ready: function(e) {
                 selectSong(options.startIndex, options.startImmediately);
-                mixinAudioPause();
+                if (options.fadeVolumn) {
+                    mixinAudioPause();
+                }
             },
             loadstart: function(e) {
                 log('Start loading...');
@@ -5250,11 +5253,13 @@ CirclePlayer.prototype = {
             canplay: function(e) {
                 log('canplay');
                 fixLoadingButton(false);
-                clearTimeout(loadingTimer);
+                clearAllTimeout();
             },
             play: function(e) {
                 log('play');
-                $mockPlayer.jPlayerFade().in(1000);
+                if (options.fadeVolumn) {
+                    $mockPlayer.jPlayerFade().fadeIn(1000);
+                }
             },
             pause: function(e) {
                 log('pause');
@@ -5364,7 +5369,7 @@ CirclePlayer.prototype = {
             // 引入参数fadeIn，只有显示指定为true时才产生声音渐隐效果，否则直接调用原生方法
             function mixin(fadeIn) {
                 if (fadeIn) {
-                    $mockPlayer.jPlayerFade().out(800, null, null, function() {
+                    $mockPlayer.jPlayerFade().fadeOut(800, null, null, function() {
                         originalPause.call(audio);
                     });
                 } else {
@@ -5454,8 +5459,8 @@ CirclePlayer.prototype = {
             $mainContainer.find('.jp-title').html('出错啦 ←_←');
             $mainContainer.find('.jp-artist').html(
                 mainPlayer.original.length > 1 ? '即将播放下一首歌' : '请换个地方听歌吧');
-            // 3秒后自动切歌
-            setTimeout(function() {
+            // 5秒后自动切歌
+            errorTimer = setTimeout(function() {
                 if (mainPlayer.original.length > 1) {
                     mainPlayer.next();
                 }
@@ -5480,10 +5485,22 @@ CirclePlayer.prototype = {
      * 设置加载超时
      */
     function setLoadingTimeout() {
-        clearTimeout(loadingTimer);
+        clearAllTimeout();
         loadingTimer = setTimeout(function() {
             handlePlayerError('loading');
         }, 10000);
+        log('Set loading timer ' + loadingTimer);
+    }
+
+    /**
+     * 清除所有定时器
+     */
+    function clearAllTimeout() {
+        log('Clear loading timer ' + loadingTimer);
+        log('Clear error timer ' + errorTimer);
+        clearTimeout(loadingTimer);
+        clearTimeout(errorTimer);
+        loadingTimer = null;
     }
 
     function log(msg) {
